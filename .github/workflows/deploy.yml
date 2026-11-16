@@ -1,0 +1,26 @@
+name: Deploy Morshaus Theme
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Morshaus Theme zu Hetzner deployen
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          port: 22
+          source: ".,!.git,!.github"
+          target: "public_html/wp-content/themes/morshaus-pilot"
+          overwrite: true
