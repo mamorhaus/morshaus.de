@@ -14,13 +14,13 @@ jobs:
       - name: Repository auschecken
         uses: actions/checkout@v4
 
-      - name: Morshaus Theme zu Hetzner deployen
-        uses: appleboy/scp-action@v1
+      - name: Morshaus Theme per SFTP zu Hetzner deployen
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
-          host: ${{ secrets.HETZNER_HOST }}
+          server: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
-          key: ${{ secrets.HETZNER_SSH_KEY }}
+          ssh_private_key: ${{ secrets.HETZNER_SSH_KEY }}
           port: 22
-          source: ".,!.git,!.github"
-          target: "public_html/wp-content/themes/morshaus-pilot"
-          overwrite: true
+          local_path: './*'
+          remote_path: 'public_html/wp-content/themes/morshaus-pilot'
+          sftp_only: true
