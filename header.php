@@ -9,7 +9,7 @@
 <?php wp_body_open(); ?>
 <a class="mh-skip-link" href="#main">Zum Inhalt springen</a>
 <header class="mh-site-header">
-  <?php $hero = is_front_page() ? morshaus_pilot_header_url() : ''; ?>
+  <?php $hero = morshaus_pilot_header_url(); ?>
   <?php if ($hero) : ?><div class="mh-header-image"><img src="<?php echo esc_url($hero); ?>" alt=""></div><?php endif; ?>
   <div class="mh-header-inner mh-container mh-container--wide">
     <a class="mh-brand" href="<?php echo esc_url(home_url('/')); ?>" rel="home">

@@ -29,7 +29,7 @@ jobs:
             ! -path './.git*' \
             ! -path './.github*' \
             ! -path '.' \
-            -printf 'mkdir %P\n' \
+            -printf '-mkdir "%P"\n' \
             > /tmp/mkdirs.txt
 
           {

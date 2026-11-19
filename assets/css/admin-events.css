@@ -1,0 +1,172 @@
+.morshaus-event-admin {
+    max-width: 1280px;
+}
+
+.morshaus-event-admin__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 18px 0 24px;
+}
+
+.morshaus-event-admin__header h1 {
+    margin: 0 0 6px;
+}
+
+.morshaus-event-admin__header p {
+    margin: 0;
+    color: #646970;
+}
+
+.morshaus-event-admin__form-card,
+.morshaus-event-admin__section,
+.morshaus-event-admin__list {
+    margin: 20px 0;
+    padding: 22px;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.morshaus-event-admin__form-card > h2,
+.morshaus-event-admin__list > h2 {
+    margin: 0 0 20px;
+}
+
+.morshaus-event-admin__top-grid,
+.morshaus-event-admin__section-grid,
+.morshaus-event-admin__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.morshaus-event-admin__top-grid,
+.morshaus-event-admin__section-grid {
+    margin-bottom: 20px;
+}
+
+.morshaus-event-admin__field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.morshaus-event-admin__field > input,
+.morshaus-event-admin__field > select {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+}
+
+.morshaus-event-admin__section h3 {
+    margin-top: 0;
+}
+
+.morshaus-event-admin__image-preview {
+    display: flex;
+    min-height: 120px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border: 1px dashed #c3c4c7;
+    background: #f6f7f7;
+    text-align: center;
+}
+
+.morshaus-event-admin__image-preview img {
+    display: block;
+    max-width: 100%;
+    max-height: 260px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.morshaus-event-admin__image-preview p {
+    margin: 0;
+    color: #646970;
+}
+
+.morshaus-event-admin__image-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.morshaus-event-admin__terms {
+    max-height: 300px;
+    overflow: auto;
+    padding: 8px 12px;
+    border: 1px solid #c3c4c7;
+    background: #fff;
+}
+
+.morshaus-event-admin__term {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.morshaus-event-admin__term + .morshaus-event-admin__term {
+    margin-top: 6px;
+}
+
+.morshaus-event-admin__fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.morshaus-event-admin__fields .morshaus-event-admin__field input {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+}
+
+.morshaus-event-admin__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.morshaus-event-admin__actions form {
+    margin: 0;
+}
+
+.morshaus-event-admin__image-column {
+    width: 76px;
+}
+
+.morshaus-event-admin__list td img {
+    display: block;
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+}
+
+@media (max-width: 900px) {
+    .morshaus-event-admin__fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .morshaus-event-admin__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .morshaus-event-admin__top-grid,
+    .morshaus-event-admin__section-grid,
+    .morshaus-event-admin__fields {
+        grid-template-columns: 1fr;
+    }
+
+    .morshaus-event-admin__form-card,
+    .morshaus-event-admin__section,
+    .morshaus-event-admin__list {
+        padding: 16px;
+    }
+}
