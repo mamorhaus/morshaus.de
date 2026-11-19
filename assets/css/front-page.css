@@ -181,6 +181,17 @@
     max-width:700px;
 }
 
+.mh-home-signal>.wp-block-group__inner-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,150px));
+    gap:16px;
+}
+
+.mh-home-signal__item{text-align:center}
+.mh-home-signal__item figure,.mh-home-signal__item p{margin:0}
+.mh-home-signal__item img{display:block;width:100%;height:auto}
+.mh-home-signal__item p{padding-top:8px}
+
 @media(max-width:1100px){
     .mh-home-panel:not(.mh-home-panel--intro){padding:58px 0}
     .mh-home-panel__grid,

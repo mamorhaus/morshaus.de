@@ -91,7 +91,7 @@ get_header();
                     </div>
                     <?php if (!empty($leads[0])) : ?>
                         <div class="mh-begegnung-note">
-                            <p><?php echo esc_html(wp_strip_all_tags($leads[0]['innerHTML'])); ?></p>
+                            <p><?php echo nl2br(esc_html(str_replace('. ', ".\n", wp_strip_all_tags($leads[0]['innerHTML']))), false); ?></p>
                         </div>
                     <?php endif; ?>
                     <section class="mh-begegnung-events" data-mh-seminare-events>

@@ -1653,15 +1653,16 @@ function morshaus_render_veranstaltung($post_id) {
                 data-costs="<?php echo esc_attr( $cost_text ); ?>"
                 data-price="<?php echo esc_attr( $cost_data['total'] ); ?>"
             >
-                <a
-                    class="wp-block-button__link wp-element-button event-add-link"
-                    href="#"
-                >
-                    Zur Bestellliste hinzufügen
-                </a>
+                <div class="event-add-action">
+                    <a
+                        class="wp-block-button__link wp-element-button event-add-link"
+                        href="#"
+                    >
+                        Zur Bestellliste hinzufügen
+                    </a>
+                    <div class="event-add-feedback" aria-live="polite" aria-atomic="true"></div>
+                </div>
             </div>
-
-            <div class="event-add-feedback" aria-live="polite"></div>
         </div>
     </div>
 </article>
@@ -1884,27 +1885,38 @@ function morshaus_veranstaltungen_shortcode($atts) {
                 margin: 0;
             }
 
+            .event-add-action {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                max-width: 100%;
+            }
+
             .event-add-feedback {
-                min-height: 1.2em;
-                margin-top: 8px;
-                text-align: center;
-                font-size: 0.95rem;
-                color: #555;
+                position: absolute;
+                top: 50%;
+                right: calc(100% + 10px);
+                margin: 0;
+                color: #657f5e;
+                font-size: 14px;
+                line-height: 1.4;
+                white-space: nowrap;
                 opacity: 0;
+                transform: translateY(-50%);
                 transition: opacity 0.3s ease;
+                pointer-events: none;
             }
 
-            .event-add-feedback.visible {
-                opacity: 1;
+            .event-add-feedback.visible { opacity: 1; }
+            .event-add-feedback.is-error {
+                width: min(250px, 40vw);
+                color: #9a665e;
+                text-align: right;
+                white-space: normal;
             }
 
-            .event-add-feedback .event-feedback-pill {
-                display: inline-block;
-                background: #e3f0dc;
-                color: #3b5a2a;
-                border-radius: 999px;
-                padding: 4px 10px;
-                font-weight: 600;
+            @media (prefers-reduced-motion: reduce) {
+                .event-add-feedback { transition: none; }
             }
 
             @media (max-width: 767px) {
@@ -1928,10 +1940,6 @@ function morshaus_veranstaltungen_shortcode($atts) {
 
                 .event-add-btn {
                     justify-content: center;
-                }
-
-                .event-add-feedback {
-                    text-align: center;
                 }
 
                 .morshaus-events-toolbar {
@@ -1987,9 +1995,27 @@ function morshaus_veranstaltungen_shortcode($atts) {
                     grid-template-columns: minmax(0, 1fr);
                 }
 
-                .morshaus-veranstaltung__footer.has-image > .event-add-btn,
-                .morshaus-veranstaltung__footer.has-image > .event-add-feedback {
+                .morshaus-veranstaltung__footer.has-image > .event-add-btn {
                     grid-column: 1;
+                }
+
+                .event-add-action {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .event-add-feedback {
+                    position: static;
+                    max-width: 100%;
+                    margin-top: 6px;
+                    text-align: center;
+                    white-space: normal;
+                    transform: none;
+                }
+
+                .event-add-feedback.is-error {
+                    width: auto;
+                    text-align: center;
                 }
 
                 .morshaus-events-list {

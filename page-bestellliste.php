@@ -36,7 +36,7 @@
                                 <span class="mh-order-action-status" role="status" aria-live="polite"></span>
                             </div>
                         </div>
-                        <p>Du kannst die Nachricht kopieren und anschließend per Signal oder E-Mail senden.</p>
+                        <p>Du kannst die Nachricht per Button kopieren und anschließend per Signal oder E-Mail senden.</p>
                         <label class="screen-reader-text" for="order-template">Deine Bestellnachricht</label>
                         <textarea id="order-template" rows="10"></textarea>
                         <div class="mh-order-message-actions">

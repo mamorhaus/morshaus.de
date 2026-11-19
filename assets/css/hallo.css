@@ -14,21 +14,29 @@ div.mh-hallo-intro{display:block}
 .mh-hallo-discover{margin:0 0 36px}
 .mh-hallo-discover h2{margin:0 0 30px;color:var(--mh-color-ink);font-family:var(--mh-font-display);font-size:clamp(28px,2.4vw,36px);font-weight:800;letter-spacing:.035em;text-align:center}
 .mh-hallo-topics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
-.mh-hallo-topic{display:flex;flex-direction:column;min-width:0;min-height:158px;color:var(--mh-color-ink);text-decoration:none}
+.mh-hallo-topic{display:flex;flex-direction:column;min-width:0;color:var(--mh-color-ink);text-decoration:none}
 .mh-hallo-topic h3{margin:0 0 10px;font-size:17px;font-weight:800;line-height:1.3}
 .mh-hallo-topic p{margin:0 0 18px;color:var(--mh-color-muted);font-size:14px;line-height:1.5}
 .mh-hallo-topic__link{display:inline-flex;align-items:center;gap:8px;margin-top:auto;color:#52684c;font-size:12px;font-weight:800}
-.mh-hallo-topic__link::after{content:"→";font-size:16px;transition:transform .18s ease}
+.mh-hallo-topic__link::after{content:"\2192";font-size:16px;transition:transform .18s ease}
 .mh-hallo-topic:hover .mh-hallo-topic__link::after,.mh-hallo-topic:focus-visible .mh-hallo-topic__link::after{transform:translateX(4px)}
 .mh-hallo-topic:focus-visible{outline:2px solid var(--mh-color-sage);outline-offset:4px}
 
 .mh-hallo-topics{margin:0;padding:0;list-style:none}
-.mh-hallo-topics>li{display:flex;flex-direction:column;min-width:0;min-height:158px;margin:0;color:var(--mh-color-muted);font-size:14px;line-height:1.5;list-style:none}
+.mh-hallo-topics>li{display:flex;flex-direction:column;min-width:0;margin:0;color:var(--mh-color-muted);font-size:14px;line-height:1.5;list-style:none}
 .mh-hallo-topics>li strong{margin:0 0 10px;color:var(--mh-color-ink);font-size:17px;font-weight:800;line-height:1.3}
-.mh-hallo-topics>li a{display:inline-flex;align-items:center;gap:8px;margin-top:auto;color:#52684c;font-size:12px;font-weight:800;text-decoration:none}
-.mh-hallo-topics>li a::after{content:"→";font-size:16px;transition:transform .18s ease}
+.mh-hallo-topics>li a{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding-top:10px;color:#52684c;font-size:12px;font-weight:800;text-decoration:none}
+.mh-hallo-topics>li a::after{content:"\2192";font-size:16px;transition:transform .18s ease}
 .mh-hallo-topics>li a:hover::after,.mh-hallo-topics>li a:focus-visible::after{transform:translateX(4px)}
 .mh-hallo-topics>li a:focus-visible{outline:2px solid var(--mh-color-sage);outline-offset:4px}
+.mh-hallo-topics>li:has(a[href*="/tee/"])::before,.mh-hallo-topic[href*="/tee/"]::before,
+.mh-hallo-topics>li:has(a[href*="/utensilien/"])::before,.mh-hallo-topic[href*="/utensilien/"]::before,
+.mh-hallo-topics>li:has(a[href*="/seminare/"])::before,.mh-hallo-topic[href*="/seminare/"]::before,
+.mh-hallo-topics>li:has(a[href*="/begegnung/"])::before,.mh-hallo-topic[href*="/begegnung/"]::before{display:block;width:32px;height:32px;margin-bottom:12px;background:center/contain no-repeat;content:""}
+.mh-hallo-topics>li:has(a[href*="/tee/"])::before,.mh-hallo-topic[href*="/tee/"]::before{background-image:url("../Icons/hallo-geniessen.svg")}
+.mh-hallo-topics>li:has(a[href*="/utensilien/"])::before,.mh-hallo-topic[href*="/utensilien/"]::before{background-image:url("../Icons/hallo-zubereiten.svg")}
+.mh-hallo-topics>li:has(a[href*="/seminare/"])::before,.mh-hallo-topic[href*="/seminare/"]::before{background-image:url("../Icons/hallo-lernen.svg")}
+.mh-hallo-topics>li:has(a[href*="/begegnung/"])::before,.mh-hallo-topic[href*="/begegnung/"]::before{background-image:url("../Icons/hallo-begegnen.svg")}
 
 .mh-hallo-values{margin:0;padding:38px 40px 34px;border:2px solid rgba(255,255,255,.8);border-radius:18px;background:var(--mh-color-panel);color:var(--mh-color-white);text-align:center}
 .mh-hallo-values h2{margin:0 0 14px;font-size:clamp(26px,2.5vw,34px);font-weight:700;line-height:1.2}
@@ -46,6 +54,10 @@ div.mh-hallo-intro{display:block}
 .mh-hallo-contact>.wp-block-group__inner-container{display:flex;flex-direction:column;align-items:center;gap:14px}
 .mh-hallo-contact h2{margin:0;color:var(--mh-color-ink);font-size:22px;font-weight:800;line-height:1.3}
 .mh-hallo-contact .wp-block-buttons{margin:0}
+
+@media(min-width:561px){
+    .mh-hallo-topic,.mh-hallo-topics>li{align-items:center;justify-self:center;width:100%;max-width:170px;text-align:center}
+}
 
 @media(max-width:1000px){
     .mh-hallo-page{width:min(820px,100%)}

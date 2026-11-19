@@ -48,6 +48,11 @@ body.home .mh-header-image img{
 }
 
 @media(min-width:783px){
+    body:not(.home) .mh-site-header,
+    body:not(.home) .mh-header-inner{
+        height:auto;
+    }
+
     body.home .mh-site-header{
         height:calc(100vh - 66px);
     }
@@ -228,16 +233,14 @@ body.page .mh-page-header{position:absolute;width:1px;height:1px;margin:-1px;pad
 .morshaus-veranstaltung__media{justify-self:center}
 .morshaus-veranstaltung__details{font-size:15px;line-height:1.5}
 .morshaus-veranstaltung__wert{font-size:17px;font-weight:400}
-.event-add-feedback:empty{display:none}
+.event-add-feedback:empty{visibility:hidden;margin:0}
 .morshaus-veranstaltung__footer.has-image{
     display:grid;
     grid-template-columns:minmax(0,1fr) minmax(260px,40%);
     gap:24px;
 }
-.morshaus-veranstaltung__footer.has-image>.event-add-btn,
-.morshaus-veranstaltung__footer.has-image>.event-add-feedback{grid-column:2}
+.morshaus-veranstaltung__footer.has-image>.event-add-btn{grid-column:2}
 .event-add-btn{width:100%;display:flex;justify-content:center;margin:0}
-.event-add-feedback{text-align:center}
 .morshaus-veranstaltung__beschreibung{margin-top:8px;color:var(--mh-color-muted)}
 .morshaus-veranstaltung__beschreibung-content[hidden]{display:none!important}
 .morshaus-veranstaltung__beschreibung-toggle{
@@ -287,6 +290,7 @@ body.page-id-71 .mh-main>.mh-container--content,
 body.page-id-72 .mh-main>.mh-container--content{max-width:var(--mh-width-wide)}
 body.page-id-71 .mh-page,
 body.page-id-72 .mh-page{max-width:820px;margin-left:0}
+.mh-page--footer-content{max-width:var(--mh-width-content)}
 body.mh-event-list-page .mh-main>.mh-container--content{width:min(calc(100% - 60px),var(--mh-width-content));max-width:var(--mh-width-content);margin-left:max(30px,calc((100% - var(--mh-width-wide))/2 + 30px));margin-right:auto}
 body.mh-event-list-page .mh-page{max-width:none;margin-left:0;margin-right:0}
 body.page-id-1437 .mh-order-page{margin-left:0;margin-right:auto}

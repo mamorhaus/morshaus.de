@@ -17,12 +17,19 @@ if (!$panels) {
     $front_id = absint(get_option('page_on_front'));
     if ($front_id) $panels = array($front_id);
 }
+$destinations = array(
+    'hallo-2' => '/hallo/',
+    'tee-teaser' => '/tee/',
+    'utensilien-teaser' => '/utensilien-teaser/utensilien/',
+    'essions-teaser' => '/begegnung/',
+);
 foreach ($panels as $index => $panel_id) :
     $post = get_post($panel_id);
     if (!$post) continue;
     $image = get_the_post_thumbnail_url($panel_id, 'full');
-    $url = get_permalink($panel_id);
-    $title = get_the_title($panel_id);
+    $slug = $post->post_name;
+    $url = isset($destinations[$slug]) ? home_url($destinations[$slug]) : get_permalink($panel_id);
+    $title = $slug === 'essions-teaser' ? 'Begegnung' : get_the_title($panel_id);
     $content = apply_filters('the_content', $post->post_content);
     $is_intro = $index === 0;
 ?>

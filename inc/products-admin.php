@@ -499,7 +499,7 @@ function morshaus_render_produkte_admin_page() {
                             <input type="checkbox" name="morshaus_show_thumbnails" value="1" <?php checked(!$edit_produkt || !isset($edit_produkt['show_thumbnails']) || !empty($edit_produkt['show_thumbnails'])); ?>>
                             Varianten-Thumbnails auf der Produktseite anzeigen
                         </label>
-                        <p class="description">Deaktiviert nur die Thumbnailleiste unter dem Hauptbild. Hauptbild und Zoom-/Detailgalerie bleiben erhalten.</p>
+                        <p class="description">Deaktiviert nur die Varianten-Thumbnails. Produktbilder und Zoom-/Detailgalerie bleiben erhalten. Die Bilderauswahl unter dem Hauptbild erscheint nur ohne Variantenauswahl.</p>
                     </td>
                 </tr>
             </table>

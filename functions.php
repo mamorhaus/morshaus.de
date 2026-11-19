@@ -273,7 +273,7 @@ function morshaus_pilot_register_content_patterns() {
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
 <div class="wp-block-buttons">
 <!-- wp:button -->
-<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/hallo/hallo-2/">Mehr</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/hallo/">Mehr</a></div>
 <!-- /wp:button -->
 </div>
 <!-- /wp:buttons -->
@@ -306,7 +306,7 @@ function morshaus_pilot_register_content_patterns() {
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
 <div class="wp-block-buttons">
 <!-- wp:button -->
-<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/tee-teaser/">Mehr</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/tee/">Mehr</a></div>
 <!-- /wp:button -->
 </div>
 <!-- /wp:buttons -->
@@ -339,7 +339,7 @@ function morshaus_pilot_register_content_patterns() {
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
 <div class="wp-block-buttons">
 <!-- wp:button -->
-<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/utensilien-teaser/">Mehr</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/utensilien-teaser/utensilien/">Mehr</a></div>
 <!-- /wp:button -->
 </div>
 <!-- /wp:buttons -->
@@ -372,7 +372,7 @@ function morshaus_pilot_register_content_patterns() {
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
 <div class="wp-block-buttons">
 <!-- wp:button -->
-<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/essions-teaser/">Mehr</a></div>
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="/begegnung/">Mehr</a></div>
 <!-- /wp:button -->
 </div>
 <!-- /wp:buttons -->
@@ -400,7 +400,7 @@ function morshaus_pilot_register_content_patterns() {
 <!-- wp:group {"className":"mh-prose"} -->
 <div class="wp-block-group mh-prose">
 <!-- wp:paragraph -->
-<p><strong>Interesse geweckt?</strong> Du möchtest Tee bestellen? Deine Ausstattung erweitern? Mehr über Zubereitung und Kultur lernen? Oder einfach gemeinsam einen Tee trinken?</p>
+<p><strong>Interesse geweckt?</strong><br>Du möchtest Tee bestellen?<br>Deine Ausstattung erweitern?<br>Mehr über Zubereitung und Kultur lernen?<br>Oder einfach gemeinsam einen Tee trinken?</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph -->
 <p>Nutze den Shop und schreibe mir persönlich, lies <a href="/bestellung-versand-rechnung/">hier</a>, wie es geht. Informiere dich über aktuelle Veranstaltungen und Neuigkeiten in der Gruppe.</p>
@@ -409,8 +409,32 @@ function morshaus_pilot_register_content_patterns() {
 <p><strong>E-Mail:</strong> hallo@morshaus.de</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph -->
-<p><strong>Signal:</strong> <a href="https://signal.me/#eu/52lRiJxH9Adpr8HYoFmcN44UGDXx_h_fY4O-Ip1lzkBA1AN4BHJNW5Qa6f7G11DV">Maxmor</a> · <a href="https://signal.group/#CjQKILPz4WdygTFwWyT90uq_NEza_Rp6hhz1wXwWe725UW9lEhA1HCBb-nhvW989MLazYpzi">Morshaus Gruppe</a></p>
+<p><strong>Signal:</strong></p>
 <!-- /wp:paragraph -->
+<!-- wp:group {"className":"mh-home-signal"} -->
+<div class="wp-block-group mh-home-signal">
+<!-- wp:group {"className":"mh-home-signal__item"} -->
+<div class="wp-block-group mh-home-signal__item">
+<!-- wp:image {"sizeSlug":"full","linkDestination":"custom"} -->
+<figure class="wp-block-image size-full"><a href="https://signal.me/#eu/52lRiJxH9Adpr8HYoFmcN44UGDXx_h_fY4O-Ip1lzkBA1AN4BHJNW5Qa6f7G11DV"><img src="/wp-content/uploads/2026/11/QR-Signal-Maxmor.png" alt="QR-Code für Signal-Kontakt Maxmor"/></a></figure>
+<!-- /wp:image -->
+<!-- wp:paragraph -->
+<p><a href="https://signal.me/#eu/52lRiJxH9Adpr8HYoFmcN44UGDXx_h_fY4O-Ip1lzkBA1AN4BHJNW5Qa6f7G11DV">Maxmor</a></p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:group {"className":"mh-home-signal__item"} -->
+<div class="wp-block-group mh-home-signal__item">
+<!-- wp:image {"sizeSlug":"full","linkDestination":"custom"} -->
+<figure class="wp-block-image size-full"><a href="https://signal.group/#CjQKILPz4WdygTFwWyT90uq_NEza_Rp6hhz1wXwWe725UW9lEhA1HCBb-nhvW989MLazYpzi"><img src="/wp-content/uploads/2026/11/QR-Signal-Gruppe.png" alt="QR-Code für die Morshaus Signal-Gruppe"/></a></figure>
+<!-- /wp:image -->
+<!-- wp:paragraph -->
+<p><a href="https://signal.group/#CjQKILPz4WdygTFwWyT90uq_NEza_Rp6hhz1wXwWe725UW9lEhA1HCBb-nhvW989MLazYpzi">Morshaus Gruppe</a></p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
 </div>
 <!-- /wp:group -->
 </div>
@@ -461,10 +485,10 @@ HTML
 <!-- /wp:heading -->
 <!-- wp:list {"className":"mh-hallo-topics"} -->
 <ul class="wp-block-list mh-hallo-topics">
-<li><strong>Genießen</strong> – Ausgewählte Tees nach Herkunft, Anlass und Geschmack. <a href="/tee/">Zu den Tees</a></li>
-<li><strong>Zubereiten</strong> – Werkzeuge und Gefäße für eine bewusste Zubereitung. <a href="/utensilien-teaser/utensilien/">Zu den Utensilien</a></li>
-<li><strong>Lernen</strong> – Grundlagen kennenlernen oder Wissen vertiefen. <a href="/seminare/">Zu den Seminaren</a></li>
-<li><strong>Begegnen</strong> – Zwei oder drei Tassen und Zeit für ein gutes Gespräch. <a href="/begegnung/">Zur Begegnung</a></li>
+<li><strong>Genießen</strong> Ausgewählte Tees nach Herkunft, Anlass und Geschmack. <a href="/tee/">Zu den Tees</a></li>
+<li><strong>Zubereiten</strong> Werkzeuge und Gefäße für eine bewusste Zubereitung. <a href="/utensilien-teaser/utensilien/">Zu den Utensilien</a></li>
+<li><strong>Lernen</strong> Grundlagen kennenlernen oder Wissen vertiefen. <a href="/seminare/">Zu den Seminaren</a></li>
+<li><strong>Begegnen</strong> Zwei oder drei Tassen und Zeit für ein gutes Gespräch. <a href="/begegnung/">Zur Begegnung</a></li>
 </ul>
 <!-- /wp:list -->
 </div>

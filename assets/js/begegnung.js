@@ -126,8 +126,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    var feedbackTimers = new WeakMap();
+    function showEventFeedback(feedback, message, isError) {
+        if (!feedback) {
+            console.error('Die Rückmeldung zum Veranstaltungseintrag fehlt.');
+            return;
+        }
+
+        var timers = feedbackTimers.get(feedback) || {};
+        window.cancelAnimationFrame(timers.frame);
+        window.clearTimeout(timers.fade);
+        window.clearTimeout(timers.hide);
+        feedback.textContent = message;
+        feedback.classList.toggle('is-error', Boolean(isError));
+        timers.frame = window.requestAnimationFrame(function () {
+            feedback.classList.add('visible');
+        });
+        if (!isError) {
+            timers.fade = window.setTimeout(function () {
+                feedback.classList.remove('visible');
+                timers.hide = window.setTimeout(function () {
+                    feedback.textContent = '';
+                }, 300);
+            }, 3000);
+        }
+        feedbackTimers.set(feedback, timers);
+    }
+
     document.addEventListener('click', function (event) {
-        var link = event.target.closest('.event-add-btn > .event-add-link');
+        var link = event.target.closest('.event-add-btn .event-add-link');
 
         if (!link) {
             return;
@@ -135,23 +162,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         event.preventDefault();
         var wrapper = link.closest('.event-add-btn');
-        var feedback = wrapper && wrapper.nextElementSibling;
-
-        function showFeedback(message, isError) {
-            if (!feedback || !feedback.classList.contains('event-add-feedback')) {
-                console.error('Die Rückmeldung zum Veranstaltungseintrag fehlt.');
-                return;
-            }
-
-            feedback.textContent = message;
-            feedback.classList.toggle('is-error', Boolean(isError));
-            feedback.classList.add('visible');
-        }
 
         if (!wrapper) {
             console.error('Der Veranstaltungs-Button ist keinem Termin zugeordnet.');
             return;
         }
+        var feedback = wrapper.querySelector('.event-add-feedback');
 
         if (link.dataset.state === 'added') {
             window.location.assign(new URL('/bestellliste/', window.location.origin));
@@ -211,10 +227,10 @@ document.addEventListener('DOMContentLoaded', function () {
             window.localStorage.setItem('bestellliste', JSON.stringify(list));
             link.dataset.state = 'added';
             link.textContent = 'Zur Bestellliste';
-            showFeedback('Zur Bestellliste hinzugefügt', false);
+            showEventFeedback(feedback, 'Zur Bestellliste hinzugefügt.', false);
         } catch (error) {
             console.error(error);
-            showFeedback('Termin konnte nicht zur Bestellliste hinzugefügt werden.', true);
+            showEventFeedback(feedback, 'Termin konnte nicht zur Bestellliste hinzugefügt werden.', true);
         }
     });
 });

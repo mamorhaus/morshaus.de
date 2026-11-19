@@ -11,6 +11,8 @@ Installation:
 Seminartermine: Weise dem Termin die passende Veranstaltungskategorie zu, z. B.
 „Am Tisch > Grundlagen“ oder „In Stille > Bogen/Zeremonie“. Die Themenauswahl
 auf der Seminarseite filtert nach diesen Kategorien.
+Die Rückmeldung zum Hinzufügen eines Termins erscheint neben dem
+Bestelllisten-Button und blendet sich nach drei Sekunden aus.
 
 Produkte: Die Sencha-Seite nutzt die vorhandenen Produktdaten und Medien aus
 WordPress. Unter „Produkte“ können Ausführungen, Modelle, Mengen, Preise,
@@ -27,6 +29,9 @@ Aktivierte Merkmal-Hinweise erscheinen als Tooltip am Info-Symbol. Bilder für
 Dose, Klammer und Brandstempel lassen sich je Variante in der Produktverwaltung
 unter „Extras“ auswählen; beim Anklicken erscheint das Bild in der Galerie,
 nicht in der Extras-Auswahl.
+Sind mehrere Produktfotos vorhanden, können sie bei Produkten ohne Varianten
+und ohne angezeigte Variantenauswahl unter dem Hauptbild ausgewählt werden.
+In der vergrößerten Bildansicht zeigt die Maus eine Lupe für Bilddetails.
 Ab fünf Varianten zeigt die Auswahl unter dem Produktbild ein endloses Karussell.
 Bei weniger Varianten wird das ausgewählte Thumbnail größer dargestellt.
 Varianten können angeklickt sowie per Wischgeste oder Pfeiltasten gewählt werden.

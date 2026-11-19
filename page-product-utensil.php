@@ -20,6 +20,7 @@ get_header();
                             <p class="mh-product__no-image" hidden>Kein Produktbild vorhanden.</p>
                         </div>
                         <div class="mh-product__choices">
+                            <div class="mh-product__gallery-thumbs" role="group" aria-label="Produktbilder auswählen" hidden></div>
                             <div class="mh-product__selection-group mh-product__model-selection" hidden>
                                 <p class="mh-product__selection-label">Variante</p>
                                 <div class="mh-product__models-carousel">
@@ -76,9 +77,14 @@ get_header();
                         </section>
                     </div>
                     <dialog class="mh-product__dialog" aria-label="Vergrößerte Produktbilder">
-                        <button type="button" data-action="close" class="mh-product__dialog-close" aria-label="Schließen">×</button>
                         <button type="button" data-action="previous" aria-label="Vorheriges Bild">‹</button>
-                        <img alt="">
+                        <div class="mh-product__dialog-frame">
+                            <div class="mh-product__dialog-viewport">
+                                <img class="mh-product__dialog-image" alt="">
+                                <span class="mh-product__dialog-lens" aria-hidden="true"></span>
+                            </div>
+                            <button type="button" data-action="close" class="mh-product__dialog-close" aria-label="Schließen" autofocus>×</button>
+                        </div>
                         <button type="button" data-action="next" aria-label="Nächstes Bild">›</button>
                     </dialog>
                     <noscript><p>Für die Produktauswahl und die Bestellliste wird JavaScript benötigt.</p></noscript>

@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         var isTea = data.category === 'tee';
+        var hasVariants = data.editions.some(function (item) { return item.models.length > 1; });
         var editionIndex = data.initialEdition ? data.editions.findIndex(function (item) { return item.name === data.initialEdition; }) : 0;
         if (editionIndex < 0) editionIndex = 0;
         var modelIndex = 0;
@@ -46,11 +47,14 @@ document.addEventListener('DOMContentLoaded', function () {
         var modelTouchStart = null;
         var stage = product.querySelector('.mh-product__stage');
         var image = product.querySelector('.mh-product__image');
+        var galleryThumbs = product.querySelector('.mh-product__gallery-thumbs');
         var select = product.querySelector('#mh-product-quantity');
         var extras = product.querySelector('.mh-product__extras');
         var extrasList = extras.querySelector('div');
         var addButton = product.querySelector('.mh-product__add');
         var dialog = product.querySelector('.mh-product__dialog');
+        var dialogViewport = dialog.querySelector('.mh-product__dialog-viewport');
+        var dialogLens = dialog.querySelector('.mh-product__dialog-lens');
 
         function edition() { return data.editions[editionIndex]; }
         function model() { return edition().models[modelIndex]; }
@@ -281,13 +285,39 @@ document.addEventListener('DOMContentLoaded', function () {
             imageIndex = 0;
             stage.hidden = !images.length;
             product.querySelector('.mh-product__no-image').hidden = Boolean(images.length);
-            if (images.length) {
-                image.src = images[0].full;
-                image.alt = images[0].alt || model().name;
-            } else {
+            galleryThumbs.replaceChildren();
+            galleryThumbs.hidden = model().images.length < 2 || hasVariants || !modelSelection.hidden;
+            if (!galleryThumbs.hidden) {
+                model().images.forEach(function (photo, index) {
+                    var button = document.createElement('button');
+                    var thumbnail = document.createElement('img');
+                    button.type = 'button';
+                    button.className = 'mh-product__gallery-thumb';
+                    button.setAttribute('aria-label', 'Produktbild ' + (index + 1) + ' von ' + model().images.length + ' anzeigen');
+                    thumbnail.src = photo.thumb;
+                    thumbnail.alt = '';
+                    button.appendChild(thumbnail);
+                    button.addEventListener('click', function () {
+                        imageIndex = galleryImages().findIndex(function (item) { return item.full === photo.full; });
+                        updateGalleryImage();
+                    });
+                    galleryThumbs.appendChild(button);
+                });
+            }
+            if (images.length) updateGalleryImage();
+            else {
                 image.removeAttribute('src');
                 image.alt = '';
             }
+        }
+        function updateGalleryImage() {
+            var current = galleryImages()[imageIndex];
+            image.src = current.full;
+            image.alt = current.alt || model().name;
+            var selected = model().images.findIndex(function (photo) { return photo.full === current.full; });
+            galleryThumbs.querySelectorAll('button').forEach(function (button, index) {
+                button.setAttribute('aria-pressed', index === selected ? 'true' : 'false');
+            });
         }
         function updatePurchase() {
             var current = quantity();
@@ -411,9 +441,11 @@ document.addEventListener('DOMContentLoaded', function () {
         function renderDialog() {
             var images = galleryImages();
             var current = images[imageIndex];
-            var dialogImage = dialog.querySelector('img');
+            var dialogImage = dialog.querySelector('.mh-product__dialog-image');
             dialogImage.src = current.full;
             dialogImage.alt = current.alt || model().name;
+            dialogLens.classList.remove('is-active');
+            dialogLens.style.backgroundImage = 'url(' + JSON.stringify(current.full) + ')';
             dialog.querySelector('[data-action="previous"]').hidden = images.length < 2;
             dialog.querySelector('[data-action="next"]').hidden = images.length < 2;
         }
@@ -476,11 +508,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         stage.addEventListener('click', function () {
             if (!galleryImages().length) return;
-            imageIndex = 0;
             renderDialog();
             dialog.showModal();
         });
         dialog.querySelector('[data-action="close"]').addEventListener('click', function () { dialog.close(); });
+        dialogViewport.addEventListener('pointermove', function (event) {
+            if (event.pointerType !== 'mouse') return;
+            var rect = dialogViewport.getBoundingClientRect();
+            var x = event.clientX - rect.left;
+            var y = event.clientY - rect.top;
+            dialogLens.classList.add('is-active');
+            var lensCenter = dialogLens.clientWidth / 2;
+            dialogLens.style.left = x + 'px';
+            dialogLens.style.top = y + 'px';
+            dialogLens.style.backgroundSize = (rect.width * 2) + 'px ' + (rect.height * 2) + 'px';
+            dialogLens.style.backgroundPosition = (lensCenter - x * 2) + 'px ' + (lensCenter - y * 2) + 'px';
+        });
+        dialogViewport.addEventListener('pointerleave', function () { dialogLens.classList.remove('is-active'); });
         dialog.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 event.preventDefault();
@@ -490,11 +534,13 @@ document.addEventListener('DOMContentLoaded', function () {
         dialog.querySelector('[data-action="previous"]').addEventListener('click', function () {
             var images = galleryImages();
             imageIndex = (imageIndex - 1 + images.length) % images.length;
+            updateGalleryImage();
             renderDialog();
         });
         dialog.querySelector('[data-action="next"]').addEventListener('click', function () {
             var images = galleryImages();
             imageIndex = (imageIndex + 1) % images.length;
+            updateGalleryImage();
             renderDialog();
         });
         addButton.addEventListener('click', function () {

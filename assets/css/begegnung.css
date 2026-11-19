@@ -29,6 +29,7 @@ body.page-id-284 .mh-page{max-width:980px;margin-left:0;margin-right:0}
 
 .mh-begegnung-note{margin:40px 0!important;padding:22px 26px;border:2px solid rgba(255,255,255,.8);border-radius:var(--mh-radius-lg);background:var(--mh-color-panel);color:var(--mh-color-white);font-size:19px;font-weight:700;text-align:center}
 .mh-begegnung-note p{margin:0!important}
+@media(min-width:783px){.mh-seminare-page .mh-begegnung-note{padding-inline:20px;font-size:clamp(14px,1.8vw,19px)}}
 .mh-begegnung-events{scroll-margin-top:24px}
 .mh-begegnung-events .morshaus-events-cta{align-self:stretch;align-items:center;margin-bottom:-28px}
 .mh-begegnung-events .morshaus-veranstaltung__main{align-items:stretch}
