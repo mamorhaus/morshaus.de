@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded',function(){
     button.addEventListener('click',function(){
         var open=button.getAttribute('aria-expanded')==='true';
         button.setAttribute('aria-expanded',String(!open));
+        button.parentElement.classList.toggle('is-open',!open);
         panel.classList.toggle('is-open',!open);
     });
 });

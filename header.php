@@ -21,8 +21,10 @@
   <div class="mh-container mh-container--wide mh-navigation-inner">
     <div class="mh-navigation-bar">
       <a class="mh-navigation-order" href="<?php echo esc_url(home_url('/bestellliste/')); ?>" aria-label="Bestellliste">
-        <span class="mh-navigation-order-icon" aria-hidden="true"></span>
-        <span class="mh-navigation-order-count" aria-hidden="true" hidden></span>
+        <span class="mh-navigation-order-icon" aria-hidden="true">
+          <span class="mh-navigation-order-count" hidden></span>
+        </span>
+        <span>Bestellliste</span>
       </a>
       <?php if (is_singular() && !is_front_page()) : ?>
         <span class="mh-navigation-title" hidden></span>

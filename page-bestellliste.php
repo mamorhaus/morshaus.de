@@ -10,19 +10,6 @@
 
                     <section class="mh-order-section" aria-labelledby="mh-order-list-title">
                         <h2 id="mh-order-list-title">Deine aktuelle Bestellliste</h2>
-                        <ul id="cart-items" aria-live="polite" aria-relevant="additions removals text">
-                            <li class="mh-order-empty">Bestellliste wird geladen …</li>
-                        </ul>
-
-                        <div class="mh-order-total">
-                            <span>Gesamtsumme</span>
-                            <strong><span id="cart-total">—</span> €</strong>
-                        </div>
-
-                    </section>
-
-                    <section class="mh-order-section mh-order-message" aria-labelledby="mh-order-message-title">
-                        <h2 id="mh-order-message-title">Bestellnachricht</h2>
                         <div class="mh-order-actions">
                             <button type="button" id="refresh-cart">
                                 Liste aktualisieren
@@ -36,6 +23,18 @@
                                 <span class="mh-order-action-status" role="status" aria-live="polite"></span>
                             </div>
                         </div>
+                        <ul id="cart-items" aria-live="polite" aria-relevant="additions removals text">
+                            <li class="mh-order-empty">Bestellliste wird geladen …</li>
+                        </ul>
+
+                        <div class="mh-order-total">
+                            <span>Gesamtsumme</span>
+                            <strong><span id="cart-total">—</span> €</strong>
+                        </div>
+                    </section>
+
+                    <section class="mh-order-section mh-order-message" aria-labelledby="mh-order-message-title">
+                        <h2 id="mh-order-message-title">Bestellnachricht</h2>
                         <p>Du kannst die Nachricht per Button kopieren und anschließend per Signal oder E-Mail senden.</p>
                         <label class="screen-reader-text" for="order-template">Deine Bestellnachricht</label>
                         <textarea id="order-template" rows="10"></textarea>

@@ -142,7 +142,7 @@
     .mh-product__facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
 }
 @media(max-width:782px){
-    .mh-product__fact dd{font-weight:700}
+    .mh-product__fact dd{font-weight:500}
 }
 @media(max-width:600px){
     .mh-product__tabs{gap:16px}
