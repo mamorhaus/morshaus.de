@@ -74,9 +74,8 @@ div.mh-hallo-intro{display:block}
     .mh-hallo-intro__copy{padding:30px 22px 26px}
     .mh-hallo-intro__copy h1{font-size:36px}
     .mh-hallo-discover h2{margin-bottom:20px;text-align:left}
-    .mh-hallo-topics{grid-template-columns:1fr;gap:0}
-    .mh-hallo-topic{min-height:0;padding:16px 0;border-bottom:1px solid var(--mh-color-line)}
-    .mh-hallo-topics>li{min-height:0;padding:16px 0;border-bottom:1px solid var(--mh-color-line)}
+    .mh-hallo-topics{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 20px}
+    .mh-hallo-topic,.mh-hallo-topics>li{align-items:center;justify-self:center;width:100%;max-width:170px;min-height:0;text-align:center}
     .mh-hallo-topic p{margin-bottom:10px}
     .mh-hallo-values{padding:30px 20px 26px}
     .mh-hallo-values__grid{grid-template-columns:1fr}
