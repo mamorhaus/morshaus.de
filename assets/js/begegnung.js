@@ -225,6 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             window.localStorage.setItem('bestellliste', JSON.stringify(list));
+            window.dispatchEvent(new Event('mh:order-list-changed'));
             link.dataset.state = 'added';
             link.textContent = 'Zur Bestellliste';
             showEventFeedback(feedback, 'Zur Bestellliste hinzugefügt.', false);

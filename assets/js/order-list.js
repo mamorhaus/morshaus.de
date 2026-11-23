@@ -217,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             window.localStorage.setItem(storageKey, JSON.stringify(list));
+            window.dispatchEvent(new Event('mh:order-list-changed'));
             setActionStatus('Bestellliste aktualisiert.', 'is-success', true);
             render();
         } catch (error) {
@@ -287,6 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (button.id === 'clear-cart') {
             try {
                 window.localStorage.removeItem(storageKey);
+                window.dispatchEvent(new Event('mh:order-list-changed'));
                 render();
                 setActionStatus('Bestellliste geleert.', 'is-destructive', true);
             } catch (error) {

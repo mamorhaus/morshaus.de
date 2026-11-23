@@ -77,9 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
         function renderFeatures(features) {
-            var panel = product.querySelector('#mh-panel-character');
-            panel.replaceChildren();
+            var section = document.createElement('section');
             var list = document.createElement('dl');
+            section.className = 'mh-product__features';
             list.className = 'mh-product__facts';
             features.forEach(function (feature, index) {
                 if (!feature.label || !feature.wert) return;
@@ -120,8 +120,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 item.append(icon, label, value);
                 list.appendChild(item);
             });
-            if (list.children.length) panel.appendChild(list);
-            else panel.textContent = isTea ? 'Zu diesem Tee sind noch keine Merkmale hinterlegt.' : 'Zu diesem Produkt sind noch keine Merkmale hinterlegt.';
+            if (list.children.length) {
+                section.appendChild(list);
+            } else {
+                var empty = document.createElement('p');
+                empty.textContent = isTea ? 'Zu diesem Tee sind noch keine Merkmale hinterlegt.' : 'Zu diesem Produkt sind noch keine Merkmale hinterlegt.';
+                section.appendChild(empty);
+            }
+            product.querySelector('#mh-panel-description').appendChild(section);
         }
         function renderEditionButtons() {
             editionContainer.replaceChildren();
@@ -574,6 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (existing) existing.quantity = Number(existing.quantity) + count;
                 else list.push({type: 'product', name: model().name, variant: variant, price: price, quantity: count});
                 window.localStorage.setItem('bestellliste', JSON.stringify(list));
+                window.dispatchEvent(new Event('mh:order-list-changed'));
                 added = true;
                 addButton.textContent = 'Zur Bestellliste';
                 showFeedback('Zur Bestellliste hinzugefügt.', false);

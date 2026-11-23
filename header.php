@@ -19,7 +19,17 @@
 </header>
 <nav class="mh-navigation" aria-label="Hauptnavigation">
   <div class="mh-container mh-container--wide mh-navigation-inner">
-    <button class="mh-menu-toggle" type="button" aria-expanded="false" aria-controls="mh-primary-menu"><span>Menü</span><i aria-hidden="true"></i></button>
+    <div class="mh-navigation-bar">
+      <a class="mh-navigation-order" href="<?php echo esc_url(home_url('/bestellliste/')); ?>" aria-label="Bestellliste">
+        <span class="mh-navigation-order-icon" aria-hidden="true"></span>
+        <span class="mh-navigation-order-count" aria-hidden="true" hidden></span>
+      </a>
+      <?php if (is_singular() && !is_front_page()) : ?>
+        <span class="mh-navigation-title" hidden></span>
+        <span class="mh-navigation-separator" aria-hidden="true" hidden>|</span>
+      <?php endif; ?>
+      <button class="mh-menu-toggle" type="button" aria-expanded="false" aria-controls="mh-primary-menu"><span>Menü</span><i aria-hidden="true"></i></button>
+    </div>
     <div id="mh-primary-menu" class="mh-navigation-panel">
       <?php wp_nav_menu(array('theme_location'=>'primary','container'=>false,'menu_class'=>'mh-menu','fallback_cb'=>'morshaus_pilot_menu_fallback','depth'=>2)); ?>
     </div>

@@ -66,6 +66,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function updateMenus() {
+        var mobile = window.matchMedia('(max-width: 782px)').matches;
+        if (mobile) {
+            openMenu = null;
+        }
         if (page) {
             page.classList.toggle('has-expanded-carousel', Boolean(openMenu));
         }
@@ -76,6 +80,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         menus.forEach(function (menu) {
+            if (mobile) {
+                menu.cards.forEach(function (card) { card.hidden = false; });
+                if (menu.track.scrollWidth > menu.track.clientWidth || menu.button === document.activeElement) {
+                    menu.track.tabIndex = 0;
+                } else {
+                    menu.track.removeAttribute('tabindex');
+                }
+                if (menu.button === document.activeElement) {
+                    menu.track.focus();
+                }
+                menu.button.hidden = true;
+                return;
+            }
+
+            menu.track.removeAttribute('tabindex');
+            menu.track.scrollLeft = 0;
             var expanded = menu === openMenu;
             var firstCard = menu.cards[0];
             var gap = parseFloat(window.getComputedStyle(menu.track).columnGap) || 0;

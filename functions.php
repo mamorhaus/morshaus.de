@@ -189,6 +189,27 @@ function morshaus_pilot_assets() {
             : MORSHAUS_PILOT_VERSION,
         true
     );
+
+    $has_product_shortcode = false;
+    if (is_page() && is_string($post_content) && preg_match_all('/' . get_shortcode_regex(array('morshaus_produkt')) . '/s', $post_content, $matches, PREG_SET_ORDER)) {
+        foreach ($matches as $match) {
+            if ($match[1] !== '[' || $match[6] !== ']') {
+                $has_product_shortcode = true;
+                break;
+            }
+        }
+    }
+
+    if (!$has_product_shortcode) {
+        $script = $dir . '/assets/js/watermark.js';
+        wp_enqueue_script(
+            'morshaus-watermark',
+            $uri . '/assets/js/watermark.js',
+            array(),
+            file_exists($script) ? filemtime($script) : MORSHAUS_PILOT_VERSION,
+            true
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'morshaus_pilot_assets');
 

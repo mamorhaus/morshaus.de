@@ -40,11 +40,9 @@ get_header();
                             <section class="mh-product__info" aria-label="Produktinformationen">
                                 <div class="mh-product__tabs" role="tablist" aria-label="Produktinformationen">
                                     <button type="button" role="tab" id="mh-tab-description" aria-controls="mh-panel-description" aria-selected="true">Beschreibung</button>
-                                    <button type="button" role="tab" id="mh-tab-character" aria-controls="mh-panel-character" aria-selected="false" tabindex="-1">Merkmale</button>
                                     <button type="button" role="tab" id="mh-tab-preparation" aria-controls="mh-panel-preparation" aria-selected="false" tabindex="-1" hidden>Zubereitung</button>
                                 </div>
                                 <div id="mh-panel-description" class="mh-product__panel mh-product__description" role="tabpanel" aria-labelledby="mh-tab-description" tabindex="0"></div>
-                                <div id="mh-panel-character" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-character" tabindex="0" hidden></div>
                                 <div id="mh-panel-preparation" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-preparation" tabindex="0" hidden></div>
                             </section>
                         </div>

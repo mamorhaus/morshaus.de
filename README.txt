@@ -6,7 +6,13 @@ Installation:
 1. ZIP unter Design > Themes > Theme hinzufügen > Theme hochladen installieren.
 2. Theme „Morshaus Pilot“ aktivieren.
 3. Unter Design > Menüs ein Menü der Position „Hauptnavigation“ zuweisen.
+   Mobil zeigt die Navigation den aktiven Hauptmenüpunkt und nur die Hauptmenüpunkte.
+   Mobil am Bestelllisten-Symbol und auf Desktop am Menüpunkt erscheint die
+   Gesamtzahl der Produkte und Termine, wenn die Bestellliste nicht leer ist.
 4. Das Theme liest Logo, Headerbild und die sieben Startseiten-Panel-IDs aus den bisherigen Twenty-Seventeen-Theme-Mods.
+
+Auf Desktop erscheint das Teeblatt außer auf Produktseiten als dezentes Wasserzeichen im Inhaltsbereich.
+Bei reduzierter Bewegung bleibt es möglichst in der Bildschirmmitte.
 
 Seminartermine: Weise dem Termin die passende Veranstaltungskategorie zu, z. B.
 „Am Tisch > Grundlagen“ oder „In Stille > Bogen/Zeremonie“. Die Themenauswahl
@@ -20,8 +26,8 @@ Extras und Texte bearbeitet werden. Ältere Tee-Ausführungen „Einfach“ und
 „Besonders“ werden als „Alltag“ und „Erlesen“ angezeigt. Ältere Zubereitungen
 im Feld „Wissenswertes“ bleiben erhalten; entsprechend gekennzeichnete
 Geschmacks- und Zubereitungsangaben stehen in ihren jeweiligen Reitern. Beschreibung und
-Merkmale beziehungsweise Charakter stehen bei Tee und Utensilien als Reiter
-oberhalb des Bestellblocks; Tee hat zusätzlich einen Geschmacksreiter.
+Merkmale stehen bei Tee und Utensilien unter der Beschreibung oberhalb des
+Bestellblocks; Tee hat zusätzlich einen Geschmacksreiter.
 Zubereitung erscheint, wo sie relevant ist.
 Die Piktogramme der Produktmerkmale entsprechen der Auswahl in der Verwaltung;
 die Beschreibung wird vollständig angezeigt und nicht automatisch gekürzt.
@@ -39,6 +45,8 @@ Utensilien mit dem Shortcode [morshaus_produkt id="..."] erhalten die gemeinsame
 Produktansicht mit Stückpreis und den im Produkt aktivierten Brandstempeln.
 Die Karten im Utensilienverteiler sind den vorhandenen Produktseiten zugeordnet;
 für noch nicht angelegte Produkte steht dort „Produktseite folgt“.
+Mobil lassen sich die Karten jeder Tee- und Utensilienkategorie seitlich wischen;
+auf Desktop bleiben die Kategorien aufklappbar.
 
 Bewusste Grenzen des Piloten:
 - Keine Übernahme von styling.php oder landingpage.php.
