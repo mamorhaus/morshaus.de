@@ -68,12 +68,16 @@ div.mh-hallo-intro{display:block}
     .mh-hallo-topics{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 }
 
+@media(max-width:782px){
+    .mh-hallo-values h2{width:min-content;max-width:100%;margin-inline:auto}
+}
+
 @media(max-width:560px){
     .mh-hallo-intro{margin-bottom:32px}
     .mh-hallo-intro__portrait{height:360px}
     .mh-hallo-intro__copy{padding:30px 22px 26px}
     .mh-hallo-intro__copy h1{font-size:36px}
-    .mh-hallo-discover h2{margin-bottom:20px;text-align:left}
+    .mh-hallo-discover h2{margin-bottom:20px}
     .mh-hallo-topics{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 20px}
     .mh-hallo-topic,.mh-hallo-topics>li{align-items:center;justify-self:center;width:100%;max-width:170px;min-height:0;text-align:center}
     .mh-hallo-topic p{margin-bottom:10px}

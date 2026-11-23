@@ -22,9 +22,10 @@ body.page-id-284 .mh-page{max-width:980px;margin-left:0;margin-right:0}
 .mh-seminar-card:hover{transform:translateY(-2px)}
 .mh-seminar-card__select{position:absolute;inset:0;z-index:1;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:pointer}
 .mh-seminar-card__select:focus-visible{outline:3px solid var(--mh-color-sage);outline-offset:-3px}
-.mh-seminar-card__topics{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:auto;padding-top:12px}
-.mh-seminar-card__topics button{padding:0;border:0;border-bottom:1px solid transparent;background:transparent;color:var(--mh-color-sage);font:inherit;font-size:15px;cursor:pointer}
-.mh-seminar-card__topics button:hover,.mh-seminar-card__topics button[aria-pressed="true"]{border-bottom-color:currentColor}
+.mh-seminar-card__topics{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:12px}
+.mh-seminar-card__topics button{min-height:36px;padding:5px 10px;border:1px solid var(--mh-color-line);border-radius:999px;background:rgba(255,255,255,.55);color:#344331;font:inherit;font-size:14px;cursor:pointer}
+.mh-seminar-card__topics button:hover{border-color:#52684c}
+.mh-seminar-card__topics button[aria-pressed="true"]{border-color:#52684c;background:#52684c;color:#fff}
 .mh-seminar-card__topics button:focus-visible{outline:2px solid var(--mh-color-sage);outline-offset:3px}
 
 .mh-begegnung-note{margin:40px 0!important;padding:22px 26px;border:2px solid rgba(255,255,255,.8);border-radius:var(--mh-radius-lg);background:var(--mh-color-panel);color:var(--mh-color-white);font-size:19px;font-weight:700;text-align:center}
@@ -44,7 +45,32 @@ body.page-id-284 .mh-page{max-width:980px;margin-left:0;margin-right:0}
     .mh-begegnung-card__image{aspect-ratio:1.7/1}
     .mh-begegnung-card__body{padding:22px}
     .mh-begegnung-note{padding:20px}
+    .mh-seminare-page .mh-begegnung-note{font-size:16px;font-weight:400;line-height:1.5}
+    .mh-seminare-page .mh-begegnung-note p>span{display:block}
+    .mh-seminare-page .mh-begegnung-note p>br{display:none}
+    .mh-seminare-page .mh-begegnung-note p>span+br+span{margin-top:18px}
+    .mh-seminare-page .mh-begegnung-cards.is-carousel{position:relative;grid-template-columns:minmax(0,1fr);gap:0!important;overflow:hidden;touch-action:pan-y}
+    .mh-seminare-page .is-carousel .mh-seminar-card{grid-area:1/1;justify-self:center;width:82%;min-width:0}
+    .mh-seminare-page .is-carousel .mh-seminar-card.is-previous{transform:translateX(calc(-100% - 8px)) scale(.94)}
+    .mh-seminare-page .is-carousel .mh-seminar-card.is-next{transform:translateX(calc(100% + 8px)) scale(.94)}
+    .mh-seminare-page .is-carousel .mh-seminar-card.is-previous,.mh-seminare-page .is-carousel .mh-seminar-card.is-next{filter:brightness(.82)}
+    .mh-seminare-page .is-carousel .mh-seminar-card.is-outside{display:none}
+    .mh-seminare-page .is-carousel .mh-seminar-card.is-current{transform:none}
+    .mh-seminare-page .is-carousel .mh-begegnung-card__body{min-width:0;padding:18px}
+    .mh-seminare-page .is-carousel .mh-begegnung-card__text{overflow-wrap:anywhere}
+    .mh-seminare-page .is-carousel .mh-seminar-carousel__side{position:absolute;z-index:4;top:0;bottom:0;width:9%;padding:0;border:0;background:transparent;cursor:pointer}
+    .mh-seminare-page .is-carousel .mh-seminar-carousel__side--previous{left:0}
+    .mh-seminare-page .is-carousel .mh-seminar-carousel__side--next{right:0}
+    .mh-seminare-page .is-carousel .mh-seminar-carousel__side:focus-visible{outline:2px solid var(--mh-color-sage);outline-offset:-2px}
+    .mh-seminar-carousel__dots{display:flex;justify-content:center;gap:2px;margin-top:8px}
+    .mh-seminar-carousel__dots button{display:grid;width:36px;height:36px;place-items:center;padding:0;border:0;background:transparent;cursor:pointer}
+    .mh-seminar-carousel__dots button::before{width:9px;height:9px;border:1px solid #52684c;border-radius:50%;background:transparent;content:""}
+    .mh-seminar-carousel__dots button[aria-pressed="true"]::before{background:#52684c}
+    .mh-seminar-carousel__dots button:focus-visible{outline:2px solid var(--mh-color-sage);outline-offset:-2px}
 }
+
+.mh-seminar-carousel__dots[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){.mh-seminare-page .mh-seminar-card{transition:none}}
 
 @media(max-width:520px){
     .mh-begegnung-events .morshaus-events-cta{align-self:center;margin-bottom:0}

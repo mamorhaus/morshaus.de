@@ -126,6 +126,123 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    var seminarCarousel = document.querySelector('.mh-seminare-page .mh-begegnung-cards');
+    var seminarCards = seminarCarousel ? Array.from(seminarCarousel.querySelectorAll(':scope > .mh-seminar-card')) : [];
+    if (seminarCards.length >= 3) {
+        var mobileCarousel = window.matchMedia('(max-width: 782px)');
+        var currentSeminar = 0;
+        var seminarTouch = null;
+        var previousSeminar = document.createElement('button');
+        var nextSeminar = document.createElement('button');
+        var seminarDots = document.createElement('div');
+
+        previousSeminar.type = nextSeminar.type = 'button';
+        previousSeminar.className = 'mh-seminar-carousel__side mh-seminar-carousel__side--previous';
+        nextSeminar.className = 'mh-seminar-carousel__side mh-seminar-carousel__side--next';
+        seminarDots.className = 'mh-seminar-carousel__dots';
+        seminarDots.setAttribute('role', 'group');
+        seminarDots.setAttribute('aria-label', 'Seminarwelt auswählen');
+        seminarCarousel.append(previousSeminar, nextSeminar);
+        seminarCarousel.insertAdjacentElement('afterend', seminarDots);
+
+        var seminarDotsButtons = seminarCards.map(function (card, index) {
+            var dot = document.createElement('button');
+            var title = card.querySelector('h2').textContent.trim();
+            if (!card.id) card.id = 'mh-seminar-slide-' + (index + 1);
+            dot.type = 'button';
+            dot.setAttribute('aria-label', (index + 1) + ' von ' + seminarCards.length + ': ' + title);
+            dot.setAttribute('aria-controls', card.id);
+            dot.addEventListener('click', function () { showSeminar(index); });
+            seminarDots.appendChild(dot);
+            return dot;
+        });
+
+        function showSeminar(index) {
+            var focusedCard = seminarCards.find(function (card) { return card.contains(document.activeElement); });
+            currentSeminar = (index + seminarCards.length) % seminarCards.length;
+            var previous = (currentSeminar - 1 + seminarCards.length) % seminarCards.length;
+            var next = (currentSeminar + 1) % seminarCards.length;
+
+            seminarCards.forEach(function (card, cardIndex) {
+                var active = cardIndex === currentSeminar;
+                card.classList.toggle('is-current', active);
+                card.classList.toggle('is-previous', cardIndex === previous);
+                card.classList.toggle('is-next', cardIndex === next);
+                card.classList.toggle('is-outside', !active && cardIndex !== previous && cardIndex !== next);
+                card.inert = !active;
+                if (active) card.removeAttribute('aria-hidden');
+                else card.setAttribute('aria-hidden', 'true');
+                seminarDotsButtons[cardIndex].setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+
+            previousSeminar.setAttribute('aria-label', 'Vorherige Seminarwelt: ' + seminarCards[previous].querySelector('h2').textContent.trim());
+            previousSeminar.setAttribute('aria-controls', seminarCards[previous].id);
+            nextSeminar.setAttribute('aria-label', 'Nächste Seminarwelt: ' + seminarCards[next].querySelector('h2').textContent.trim());
+            nextSeminar.setAttribute('aria-controls', seminarCards[next].id);
+            if (focusedCard && focusedCard !== seminarCards[currentSeminar]) {
+                seminarCards[currentSeminar].querySelector('[data-mh-card-select]').focus({preventScroll: true});
+            }
+        }
+
+        function updateSeminarCarousel() {
+            var enabled = mobileCarousel.matches;
+            var focusCarouselControl = !enabled && (
+                document.activeElement === seminarCarousel ||
+                document.activeElement === previousSeminar ||
+                document.activeElement === nextSeminar ||
+                seminarDots.contains(document.activeElement)
+            );
+            seminarCarousel.classList.toggle('is-carousel', enabled);
+            previousSeminar.hidden = nextSeminar.hidden = seminarDots.hidden = !enabled;
+            if (enabled) {
+                seminarCarousel.setAttribute('role', 'region');
+                seminarCarousel.setAttribute('aria-label', 'Seminarwelten');
+                seminarCarousel.setAttribute('aria-roledescription', 'Karussell');
+                seminarCarousel.tabIndex = 0;
+                showSeminar(currentSeminar);
+            } else {
+                seminarCarousel.removeAttribute('role');
+                seminarCarousel.removeAttribute('aria-label');
+                seminarCarousel.removeAttribute('aria-roledescription');
+                seminarCarousel.removeAttribute('tabindex');
+                seminarCards.forEach(function (card) {
+                    card.classList.remove('is-current', 'is-previous', 'is-next', 'is-outside');
+                    card.inert = false;
+                    card.removeAttribute('aria-hidden');
+                });
+                seminarTouch = null;
+                if (focusCarouselControl) {
+                    seminarCards[currentSeminar].querySelector('[data-mh-card-select]').focus({preventScroll: true});
+                }
+            }
+        }
+
+        previousSeminar.addEventListener('click', function () { showSeminar(currentSeminar - 1); });
+        nextSeminar.addEventListener('click', function () { showSeminar(currentSeminar + 1); });
+        seminarCarousel.addEventListener('keydown', function (event) {
+            if (!mobileCarousel.matches || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
+            event.preventDefault();
+            showSeminar(currentSeminar + (event.key === 'ArrowRight' ? 1 : -1));
+        });
+        seminarCarousel.addEventListener('touchstart', function (event) {
+            if (mobileCarousel.matches && event.touches.length === 1) {
+                seminarTouch = {x: event.touches[0].clientX, y: event.touches[0].clientY};
+            }
+        }, {passive: true});
+        seminarCarousel.addEventListener('touchend', function (event) {
+            if (!seminarTouch || !event.changedTouches.length) return;
+            var dx = event.changedTouches[0].clientX - seminarTouch.x;
+            var dy = event.changedTouches[0].clientY - seminarTouch.y;
+            seminarTouch = null;
+            if (Math.abs(dx) < 35 || Math.abs(dx) <= Math.abs(dy)) return;
+            if (event.cancelable) event.preventDefault();
+            showSeminar(currentSeminar + (dx < 0 ? 1 : -1));
+        }, {passive: false});
+        seminarCarousel.addEventListener('touchcancel', function () { seminarTouch = null; });
+        mobileCarousel.addEventListener('change', updateSeminarCarousel);
+        updateSeminarCarousel();
+    }
+
     var feedbackTimers = new WeakMap();
     function showEventFeedback(feedback, message, isError) {
         if (!feedback) {
