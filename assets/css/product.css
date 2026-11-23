@@ -141,11 +141,11 @@
     .mh-product__choices{gap:18px;margin-top:-10px}
     .mh-product__facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
 }
+@media(max-width:782px){
+    .mh-product__fact dd{font-weight:700}
+}
 @media(max-width:600px){
     .mh-product__tabs{gap:16px}
-}
-@media(max-width:450px){
-    .mh-product__tabs:has(#mh-tab-taste){display:grid;grid-template-columns:repeat(2,max-content);gap:8px 24px}
 }
 @media(max-width:380px){
     .mh-product__price{margin-left:0}
