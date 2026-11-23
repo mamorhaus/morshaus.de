@@ -51,12 +51,13 @@ body.page-id-284 .mh-page{max-width:980px;margin-left:0;margin-right:0}
     .mh-seminare-page .mh-begegnung-note p>span+br+span{margin-top:18px}
     body.page-id-284 .mh-begegnung-note p>br{display:block;content:"";margin-top:18px}
     .mh-begegnung-cards.is-carousel{position:relative;grid-template-columns:minmax(0,1fr);gap:0!important;overflow:hidden;touch-action:pan-y}
-    .mh-begegnung-cards.is-carousel .mh-begegnung-card{grid-area:1/1;justify-self:center;width:82%;min-width:0}
+    .mh-begegnung-cards.is-carousel .mh-begegnung-card{grid-area:1/1;justify-self:center;width:82%;min-width:0;transition:border-color .2s ease,box-shadow .2s ease}
     .mh-begegnung-cards.is-carousel .mh-begegnung-card.is-previous{transform:translateX(calc(-100% - 8px)) scale(.94)}
     .mh-begegnung-cards.is-carousel .mh-begegnung-card.is-next{transform:translateX(calc(100% + 8px)) scale(.94)}
     .mh-begegnung-cards.is-carousel .mh-begegnung-card.is-previous,.mh-begegnung-cards.is-carousel .mh-begegnung-card.is-next{filter:brightness(.82)}
     .mh-begegnung-cards.is-carousel .mh-begegnung-card.is-outside{visibility:hidden}
     .mh-begegnung-cards.is-carousel .mh-begegnung-card.is-current{transform:none}
+    .mh-begegnung-cards.is-carousel .mh-begegnung-card.mh-carousel-fade{z-index:3;pointer-events:none;animation:mh-carousel-fade .32s ease-out forwards}
     .mh-begegnung-cards.is-carousel .mh-begegnung-card__body{min-width:0;padding:18px}
     .mh-begegnung-cards.is-carousel .mh-begegnung-card__text{overflow-wrap:anywhere}
     .mh-begegnung-cards.is-carousel .mh-seminar-carousel__side{position:absolute;z-index:4;top:0;bottom:0;width:9%;padding:0;border:0;background:transparent;cursor:pointer}
@@ -71,6 +72,7 @@ body.page-id-284 .mh-page{max-width:980px;margin-left:0;margin-right:0}
 }
 
 .mh-seminar-carousel__dots[hidden],.mh-begegnung-cards .mh-seminar-carousel__side[hidden]{display:none!important}
+@keyframes mh-carousel-fade{to{opacity:0}}
 @media(prefers-reduced-motion:reduce){.mh-begegnung-cards.is-carousel .mh-begegnung-card{transition:none}}
 
 @media(max-width:520px){

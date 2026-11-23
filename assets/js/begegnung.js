@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var currentSeminar = 0;
         var seminarTouch = null;
         var mirroredCard = null;
+        var fadingCard = null;
         var previousSeminar = document.createElement('button');
         var nextSeminar = document.createElement('button');
         var seminarDots = document.createElement('div');
@@ -161,10 +162,34 @@ document.addEventListener('DOMContentLoaded', function () {
             return dot;
         });
 
+        function cloneCarouselCard(card) {
+            var clone = card.cloneNode(true);
+            clone.removeAttribute('id');
+            clone.querySelectorAll('[id]').forEach(function (element) { element.removeAttribute('id'); });
+            clone.setAttribute('aria-hidden', 'true');
+            clone.inert = true;
+            return clone;
+        }
+
         function showSeminar(index) {
             var focusedCard = seminarCards.find(function (card) { return card.contains(document.activeElement); });
             var previousOnOriginal = seminarCards.length === 2 && index < currentSeminar;
-            currentSeminar = (index + seminarCards.length) % seminarCards.length;
+            var nextIndex = (index + seminarCards.length) % seminarCards.length;
+            if (fadingCard) {
+                fadingCard.remove();
+                fadingCard = null;
+            }
+            if (nextIndex !== currentSeminar && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                fadingCard = cloneCarouselCard(seminarCards[currentSeminar]);
+                fadingCard.classList.remove('is-current');
+                fadingCard.classList.add('mh-carousel-fade');
+                fadingCard.addEventListener('animationend', function () {
+                    if (fadingCard === this) fadingCard = null;
+                    this.remove();
+                });
+                seminarCarousel.appendChild(fadingCard);
+            }
+            currentSeminar = nextIndex;
             var previous = (currentSeminar - 1 + seminarCards.length) % seminarCards.length;
             var next = (currentSeminar + 1) % seminarCards.length;
 
@@ -182,13 +207,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (mirroredCard) mirroredCard.remove();
             if (seminarCards.length === 2) {
-                mirroredCard = seminarCards[next].cloneNode(true);
-                mirroredCard.removeAttribute('id');
-                mirroredCard.querySelectorAll('[id]').forEach(function (element) { element.removeAttribute('id'); });
+                mirroredCard = cloneCarouselCard(seminarCards[next]);
                 mirroredCard.classList.remove('is-previous', 'is-next');
                 mirroredCard.classList.add(previousOnOriginal ? 'is-next' : 'is-previous');
-                mirroredCard.setAttribute('aria-hidden', 'true');
-                mirroredCard.inert = true;
                 seminarCarousel.appendChild(mirroredCard);
             }
 
@@ -218,6 +239,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 seminarCarousel.tabIndex = 0;
                 showSeminar(currentSeminar);
             } else {
+                if (fadingCard) {
+                    fadingCard.remove();
+                    fadingCard = null;
+                }
                 if (mirroredCard) {
                     mirroredCard.remove();
                     mirroredCard = null;

@@ -365,10 +365,12 @@ body.page-id-1437 .mh-order-page{margin-left:0;margin-right:auto}
     .mh-menu .sub-menu,.mh-menu .children{display:none}
     .mh-main{padding:44px 0}
     body.mh-event-list-page .mh-main>.mh-container--content{width:calc(100% - 30px);max-width:100%;margin-left:auto;margin-right:auto}
+    .mh-site-footer{border-top:1px solid var(--mh-color-line)}
     .mh-footer-menu li+li::before{margin:0 7px}
 }
 
 @media(max-width:600px){
-    .mh-footer-menu{flex-direction:column;align-items:flex-start;gap:6px}
+    .mh-footer-menu{gap:6px 0}
     .mh-footer-menu li+li::before{content:none}
+    .mh-footer-menu li:not(:last-child)::after{content:"|";margin:0 7px;color:var(--mh-color-muted)}
 }
