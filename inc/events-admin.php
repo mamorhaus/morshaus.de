@@ -22,8 +22,68 @@ function morshaus_register_event_admin_page() {
         'morshaus-event-categories',
         'morshaus_event_admin_redirect_categories'
     );
+
+    add_submenu_page(
+        'morshaus-veranstaltungen',
+        'Seminar-Verfügbarkeit',
+        'Seminar-Verfügbarkeit',
+        'edit_posts',
+        'morshaus-seminar-verfuegbarkeit',
+        'morshaus_render_seminar_availability_admin_page'
+    );
 }
 add_action('admin_menu', 'morshaus_register_event_admin_page');
+
+function morshaus_seminar_availability_labels() {
+    return array(
+        'am-tisch' => 'Am Tisch',
+        'in-stille' => 'In der Stille',
+        'im-wald' => 'Im Wald',
+        'auf-dem-wasser' => 'Auf dem Wasser',
+    );
+}
+
+function morshaus_render_seminar_availability_admin_page() {
+    if (!current_user_can('edit_posts')) {
+        wp_die('Du darfst die Seminar-Verfügbarkeit nicht bearbeiten.');
+    }
+    ?>
+    <div class="wrap">
+        <h1>Seminar-Verfügbarkeit</h1>
+        <p>Als unverfügbar markierte Seminarwelten erhalten ein Banner. Ihre Termine können nicht neu zur Bestellliste hinzugefügt werden.</p>
+        <?php if (isset($_GET['saved']) && $_GET['saved'] === '1') : ?>
+            <div class="notice notice-success is-dismissible"><p>Die Seminar-Verfügbarkeit wurde gespeichert.</p></div>
+        <?php endif; ?>
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <input type="hidden" name="action" value="morshaus_save_seminar_availability">
+            <?php wp_nonce_field('morshaus_save_seminar_availability'); ?>
+            <?php foreach (morshaus_seminar_availability_labels() as $key => $label) : ?>
+                <p><label><input type="checkbox" name="unavailable[<?php echo esc_attr($key); ?>]" value="1" <?php checked(morshaus_pilot_seminar_unavailable($key)); ?>> <?php echo esc_html($label); ?> – nicht verfügbar</label></p>
+            <?php endforeach; ?>
+            <?php submit_button('Verfügbarkeit speichern'); ?>
+        </form>
+    </div>
+    <?php
+}
+
+function morshaus_save_seminar_availability() {
+    if (!current_user_can('edit_posts')) {
+        wp_die('Du darfst die Seminar-Verfügbarkeit nicht bearbeiten.');
+    }
+    check_admin_referer('morshaus_save_seminar_availability');
+    $posted = isset($_POST['unavailable']) && is_array($_POST['unavailable']) ? wp_unslash($_POST['unavailable']) : array();
+    $settings = array();
+    foreach (morshaus_seminar_availability_labels() as $key => $label) {
+        $settings[$key] = isset($posted[$key]) && $posted[$key] === '1' ? '1' : '0';
+    }
+    update_option('morshaus_seminar_unavailable', $settings);
+    if (get_option('morshaus_seminar_unavailable') !== $settings) {
+        wp_die('Die Seminar-Verfügbarkeit konnte nicht gespeichert werden.');
+    }
+    wp_safe_redirect(admin_url('admin.php?page=morshaus-seminar-verfuegbarkeit&saved=1'));
+    exit;
+}
+add_action('admin_post_morshaus_save_seminar_availability', 'morshaus_save_seminar_availability');
 
 function morshaus_event_admin_redirect_categories() {
     if (!current_user_can('manage_categories')) {

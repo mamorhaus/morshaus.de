@@ -66,7 +66,7 @@ get_header();
                             $description = $filter === 'in-stille'
                                 ? 'Kontemplation · Tee'
                                 : (isset($paragraphs[0]) ? wp_strip_all_tags($paragraphs[0]['innerHTML']) : '');
-                            $unavailable = in_array('unverfugbar', preg_split('/\s+/', $card['attrs']['className'] ?? ''), true);
+                            $unavailable = morshaus_pilot_seminar_unavailable($filter);
                             ?>
                             <div class="mh-begegnung-card mh-seminar-card" data-filter-sub="<?php echo esc_attr($filter); ?>">
                                 <button type="button" class="mh-seminar-card__select" data-mh-card-select aria-label="<?php echo esc_attr('Termine für ' . $title . ' anzeigen'); ?>" aria-pressed="false"></button>

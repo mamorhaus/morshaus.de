@@ -81,21 +81,13 @@ function morshaus_pilot_seminar_unavailable($filter) {
         'im-wald' => 'im-wald',
         'auf-dem-wasser' => 'auf-dem-wasser',
     );
-    return isset($cards[$filter]) && in_array($cards[$filter], morshaus_pilot_unavailable_cards('seminare', 'core/heading'), true);
-}
-
-function morshaus_pilot_unavailable_card_links($content, $block) {
-    if (is_admin() || !is_page(array('tee', 'utensilien')) || ($block['blockName'] ?? '') !== 'core/cover') return $content;
-    $classes = preg_split('/\s+/', $block['attrs']['className'] ?? '');
-    if (!in_array('unverfugbar', $classes, true)) return $content;
-    $processor = new WP_HTML_Tag_Processor($content);
-    if ($processor->next_tag('a')) {
-        $processor->remove_attribute('href');
-        $processor->set_attribute('aria-disabled', 'true');
+    if (!isset($cards[$filter])) return false;
+    $settings = get_option('morshaus_seminar_unavailable', array());
+    if (is_array($settings) && array_key_exists($filter, $settings)) {
+        return $settings[$filter] === '1';
     }
-    return $processor->get_updated_html();
+    return in_array($cards[$filter], morshaus_pilot_unavailable_cards('seminare', 'core/heading'), true);
 }
-add_filter('render_block', 'morshaus_pilot_unavailable_card_links', 20, 2);
 
 function morshaus_pilot_current_utensil_product() {
     if (!is_page()) return null;

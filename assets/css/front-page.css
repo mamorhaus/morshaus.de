@@ -192,6 +192,14 @@
 .mh-home-signal__item img{display:block;width:100%;height:auto}
 .mh-home-signal__item p{padding-top:8px}
 
+@media(min-width:821px){
+    .mh-home-main:not(.mh-home-main--editable) .mh-home-panel:last-of-type .mh-home-panel__copy,
+    .mh-home-main--editable .mh-home-panel--contact .mh-home-panel__copy{
+        width:calc(100% - 20px);
+        margin-left:20px;
+    }
+}
+
 @media(max-width:1100px){
     .mh-home-panel:not(.mh-home-panel--intro){padding:58px 0}
     .mh-home-panel__grid,
@@ -224,7 +232,7 @@
 
 @media(max-width:782px){
     .mh-home-main:not(.mh-home-main--editable) .mh-home-panel:last-of-type .mh-home-panel__grid::before,
-    .mh-home-main--editable .mh-home-panel--contact .mh-home-panel__grid>.wp-block-group__inner-container::before{display:block}
+    .mh-home-main--editable .mh-home-panel--contact .mh-home-panel__grid>.wp-block-group__inner-container::before{display:block;left:-25px}
     .mh-home-panel:not(.mh-home-panel--contact){
         position:relative;
         isolation:isolate;

@@ -46,17 +46,16 @@ function morshaus_pilot_availability_editor_assets() {
     if (!$screen || $screen->base !== 'post' || !$post || $post->post_type !== 'page') return;
 
     $path = get_page_uri($post);
-    if (!in_array($path, array('tee', 'utensilien-teaser/utensilien', 'seminare'), true)) return;
+    if (!in_array($path, array('tee', 'utensilien-teaser/utensilien'), true)) return;
 
     $script = get_template_directory() . '/assets/js/availability-editor.js';
     wp_enqueue_script(
         'morshaus-availability-editor',
         get_template_directory_uri() . '/assets/js/availability-editor.js',
-        array('wp-hooks', 'wp-compose', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data'),
+        array('wp-hooks', 'wp-compose', 'wp-element', 'wp-block-editor', 'wp-components'),
         filemtime($script),
         true
     );
-    wp_add_inline_script('morshaus-availability-editor', 'window.morshausAvailabilityPage = ' . wp_json_encode($path) . ';', 'before');
 }
 add_action('enqueue_block_editor_assets', 'morshaus_pilot_availability_editor_assets');
 

@@ -4,8 +4,7 @@
     wp.hooks.addFilter('editor.BlockEdit', 'morshaus/availability', wp.compose.createHigherOrderComponent(function (BlockEdit) {
         return function (props) {
             var classes = (props.attributes.className || '').split(/\s+/).filter(Boolean);
-            var isCard = props.name === 'core/cover' &&
-                (window.morshausAvailabilityPage !== 'seminare' || classes.indexOf('morshaus-seminar-world-card') !== -1);
+            var isCard = props.name === 'core/cover';
 
             if (!isCard) return el(BlockEdit, props);
 
