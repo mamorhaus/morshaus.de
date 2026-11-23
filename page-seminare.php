@@ -66,9 +66,11 @@ get_header();
                             $description = $filter === 'in-stille'
                                 ? 'Kontemplation · Tee'
                                 : (isset($paragraphs[0]) ? wp_strip_all_tags($paragraphs[0]['innerHTML']) : '');
+                            $unavailable = in_array('unverfugbar', preg_split('/\s+/', $card['attrs']['className'] ?? ''), true);
                             ?>
                             <div class="mh-begegnung-card mh-seminar-card" data-filter-sub="<?php echo esc_attr($filter); ?>">
                                 <button type="button" class="mh-seminar-card__select" data-mh-card-select aria-label="<?php echo esc_attr('Termine für ' . $title . ' anzeigen'); ?>" aria-pressed="false"></button>
+                                <?php if ($unavailable) : ?><span class="mh-seminar-card__unavailable">Unverfügbar</span><?php endif; ?>
                                 <?php if (!empty($card['attrs']['id'])) : ?>
                                     <figure class="mh-begegnung-card__image">
                                         <?php echo wp_get_attachment_image($card['attrs']['id'], 'large'); ?>

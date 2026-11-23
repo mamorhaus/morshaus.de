@@ -19,6 +19,84 @@ function morshaus_get_produkt_by_id($id) {
     return null;
 }
 
+function morshaus_pilot_unavailable_cards($path, $label_block) {
+    static $cache = array();
+    $key = $path . ':' . $label_block;
+    if (isset($cache[$key])) return $cache[$key];
+
+    $page = get_page_by_path($path);
+    if (!$page) {
+        error_log('Morshaus: Verteilerseite nicht gefunden: ' . $path);
+        return $cache[$key] = array();
+    }
+
+    $labels = array();
+    $find_label = function ($blocks) use (&$find_label, $label_block) {
+        foreach ($blocks as $block) {
+            if (($block['blockName'] ?? '') === $label_block) {
+                return trim(wp_strip_all_tags($block['innerHTML'] ?? ''));
+            }
+            $label = $find_label($block['innerBlocks'] ?? array());
+            if ($label !== '') return $label;
+        }
+        return '';
+    };
+    $collect = function ($blocks) use (&$collect, &$labels, $find_label) {
+        foreach ($blocks as $block) {
+            if (($block['blockName'] ?? '') === 'core/cover') {
+                $classes = preg_split('/\s+/', $block['attrs']['className'] ?? '');
+                if (in_array('unverfugbar', $classes, true)) {
+                    $label = $find_label($block['innerBlocks'] ?? array());
+                    if ($label !== '') $labels[] = sanitize_title($label);
+                }
+            }
+            $collect($block['innerBlocks'] ?? array());
+        }
+    };
+    $collect(parse_blocks($page->post_content));
+    return $cache[$key] = $labels;
+}
+
+function morshaus_pilot_product_unavailable($product) {
+    $id = $product['id'] ?? '';
+    if (($product['kategorie'] ?? '') === 'tee') {
+        return $id === 'sencha' && in_array('sencha', morshaus_pilot_unavailable_cards('tee', 'core/button'), true);
+    }
+    $cards = array(
+        'loeffel' => 'Löffel',
+        'thermometer' => 'Thermometer',
+        'tasse' => 'Tassen',
+        'kanne' => 'Kannen',
+        'untersetzer' => 'Tasse/Kanne',
+        'tablett' => 'Tablett',
+        'dose' => 'Dosen',
+    );
+    return isset($cards[$id]) && in_array(sanitize_title($cards[$id]), morshaus_pilot_unavailable_cards('utensilien-teaser/utensilien', 'core/button'), true);
+}
+
+function morshaus_pilot_seminar_unavailable($filter) {
+    $cards = array(
+        'am-tisch' => 'am-tisch',
+        'in-stille' => 'in-der-stille',
+        'im-wald' => 'im-wald',
+        'auf-dem-wasser' => 'auf-dem-wasser',
+    );
+    return isset($cards[$filter]) && in_array($cards[$filter], morshaus_pilot_unavailable_cards('seminare', 'core/heading'), true);
+}
+
+function morshaus_pilot_unavailable_card_links($content, $block) {
+    if (is_admin() || !is_page(array('tee', 'utensilien')) || ($block['blockName'] ?? '') !== 'core/cover') return $content;
+    $classes = preg_split('/\s+/', $block['attrs']['className'] ?? '');
+    if (!in_array('unverfugbar', $classes, true)) return $content;
+    $processor = new WP_HTML_Tag_Processor($content);
+    if ($processor->next_tag('a')) {
+        $processor->remove_attribute('href');
+        $processor->set_attribute('aria-disabled', 'true');
+    }
+    return $processor->get_updated_html();
+}
+add_filter('render_block', 'morshaus_pilot_unavailable_card_links', 20, 2);
+
 function morshaus_pilot_current_utensil_product() {
     if (!is_page()) return null;
     $legacy_page = get_page_by_path('utensilien-teaser/untersetzer-tasse');
@@ -248,6 +326,7 @@ function morshaus_pilot_product_payload($product) {
     return array(
         'name' => (string) ($product['name'] ?? ''),
         'category' => $is_tea ? 'tee' : 'utensil',
+        'unavailable' => morshaus_pilot_product_unavailable($product),
         'showThumbnails' => !isset($product['show_thumbnails']) || !empty($product['show_thumbnails']),
         'editions' => $editions,
     );

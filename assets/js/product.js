@@ -346,10 +346,10 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 unitPrice.textContent = '';
             }
-            addButton.disabled = (isTea && (!current || current.unavailable)) || model().unavailable || model().dataError;
+            addButton.disabled = data.unavailable || (isTea && (!current || current.unavailable)) || model().unavailable || model().dataError;
             if (model().dataError) {
                 showFeedback('Preisdaten unvollständig.', true);
-            } else if (model().unavailable || (isTea && current && current.unavailable)) {
+            } else if (data.unavailable || model().unavailable || (isTea && current && current.unavailable)) {
                 showFeedback('Diese Auswahl ist derzeit nicht verfügbar.', true);
             } else if (isTea && !current) {
                 showFeedback('Keine Menge hinterlegt.', true);
@@ -556,7 +556,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             try {
                 var current = quantity();
-                if ((isTea && (!current || current.unavailable)) || model().unavailable || model().dataError) {
+                if (data.unavailable || (isTea && (!current || current.unavailable)) || model().unavailable || model().dataError) {
                     throw new Error('Diese Auswahl ist derzeit nicht verfügbar.');
                 }
                 var raw = window.localStorage.getItem('bestellliste');

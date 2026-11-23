@@ -1507,6 +1507,7 @@ function morshaus_render_veranstaltung($post_id) {
     $title = get_the_title($post_id);
     $filter_haupt = sanitize_title($art_info['art']);
     $filter_unter = sanitize_title($art_info['filter_unter']);
+    $unavailable = $filter_haupt === 'seminar' && morshaus_pilot_seminar_unavailable($filter_unter);
     $featured_image_id = get_post_thumbnail_id($post_id);
     $card_image_id = $featured_image_id
         ? $featured_image_id
@@ -1654,12 +1655,16 @@ function morshaus_render_veranstaltung($post_id) {
                 data-price="<?php echo esc_attr( $cost_data['total'] ); ?>"
             >
                 <div class="event-add-action">
+                    <?php if ($unavailable) : ?>
+                    <button class="wp-block-button__link wp-element-button" type="button" disabled>Derzeit nicht verfügbar</button>
+                    <?php else : ?>
                     <a
                         class="wp-block-button__link wp-element-button event-add-link"
                         href="#"
                     >
                         Zur Bestellliste hinzufügen
                     </a>
+                    <?php endif; ?>
                     <div class="event-add-feedback" aria-live="polite" aria-atomic="true"></div>
                 </div>
             </div>

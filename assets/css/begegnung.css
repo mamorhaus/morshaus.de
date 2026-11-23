@@ -22,6 +22,7 @@ body.page-id-284 .mh-page{max-width:980px;margin-left:0;margin-right:0}
 .mh-seminar-card:hover{transform:translateY(-2px)}
 .mh-seminar-card__select{position:absolute;inset:0;z-index:1;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:pointer}
 .mh-seminar-card__select:focus-visible{outline:3px solid var(--mh-color-sage);outline-offset:-3px}
+.mh-seminar-card__unavailable{position:absolute;z-index:2;top:8px;right:0;padding:4px 10px;border-radius:4px 0 0 4px;background:#c90000;color:#fff;font-size:10px;font-weight:800;line-height:1.2;text-transform:uppercase;pointer-events:none}
 .mh-seminar-card__topics{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:12px}
 .mh-seminar-card__topics button{min-height:36px;padding:5px 10px;border:1px solid var(--mh-color-line);border-radius:999px;background:rgba(255,255,255,.55);color:#344331;font:inherit;font-size:14px;cursor:pointer}
 .mh-seminar-card__topics button:hover{border-color:#52684c}
