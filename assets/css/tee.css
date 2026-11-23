@@ -36,9 +36,11 @@
     .mh-prose{row-gap:24px}
     .mh-prose>h2{margin-right:1px}
     .mh-prose>.mh-tee-carousel{width:100%}
-    .mh-prose .mh-tee-track{gap:10px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none}
+    .mh-prose .mh-tee-track{gap:10px;padding:4px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:4px;scrollbar-width:none}
     .mh-prose .mh-tee-track::-webkit-scrollbar{display:none}
-    .mh-tee-track>.wp-block-cover{flex-basis:130px;width:130px;height:130px;min-height:130px;max-height:130px;scroll-snap-align:start}
+    .mh-tee-track>.wp-block-cover{flex-basis:195px;width:195px;height:195px;min-height:195px;max-height:195px;border-width:1px;scroll-snap-align:start}
+    .mh-tee-track>.wp-block-cover:hover,.mh-tee-track>.wp-block-cover:focus-within{transform:none;box-shadow:0 0 0 1px #756d62}
+    .mh-tee-track>.wp-block-cover:focus-within{outline:2px solid #52684c;outline-offset:1px}
     .mh-prose .mh-tee-track .wp-block-button__link{font-size:14px}
     .mh-tee-track .wp-block-cover__inner-container{right:8px;bottom:10px;left:8px}
     .mh-tee-track>.mh-tee-card--sencha .wp-block-cover__inner-container,
@@ -46,5 +48,5 @@
 }
 
 @media(max-width:420px){
-    .mh-tee-track>.wp-block-cover{flex-basis:120px;width:120px;height:120px;min-height:120px;max-height:120px}
+    .mh-tee-track>.wp-block-cover{flex-basis:180px;width:180px;height:180px;min-height:180px;max-height:180px}
 }
