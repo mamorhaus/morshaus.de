@@ -1507,7 +1507,11 @@ function morshaus_render_veranstaltung($post_id) {
     $title = get_the_title($post_id);
     $filter_haupt = sanitize_title($art_info['art']);
     $filter_unter = sanitize_title($art_info['filter_unter']);
-    $unavailable = $filter_haupt === 'seminar' && morshaus_pilot_seminar_unavailable($filter_unter);
+    $topics = morshaus_get_veranstaltung_filter_themen($post_id);
+    $unavailable = $filter_haupt === 'seminar' && (
+        morshaus_pilot_seminar_unavailable($filter_unter) ||
+        (in_array('bogen', $topics, true) && morshaus_pilot_seminar_unavailable('bogen'))
+    );
     $featured_image_id = get_post_thumbnail_id($post_id);
     $card_image_id = $featured_image_id
         ? $featured_image_id
@@ -1532,7 +1536,7 @@ function morshaus_render_veranstaltung($post_id) {
     data-event-id="<?php echo esc_attr( $post_id ); ?>"
     data-filter-haupt="<?php echo esc_attr( $filter_haupt ); ?>"
     data-filter-unter="<?php echo esc_attr( $filter_unter ); ?>"
-    data-filter-themen="<?php echo esc_attr(implode(' ', morshaus_get_veranstaltung_filter_themen($post_id))); ?>"
+    data-filter-themen="<?php echo esc_attr(implode(' ', $topics)); ?>"
 >
     <div class="morshaus-veranstaltung__inner">
         <div class="morshaus-veranstaltung__main<?php echo $card_image !== '' ? ' has-image' : ''; ?>">

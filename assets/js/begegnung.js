@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 card.classList.toggle('is-filter-active', Boolean(active));
                 select.setAttribute('aria-pressed', active ? 'true' : 'false');
                 card.querySelectorAll('[data-mh-card-topic]').forEach(function (button) {
+                    if (button.hasAttribute('data-mh-topic-unavailable')) return;
                     var topicActive = active && selectedTopic && button.dataset.mhCardTopic === selectedTopic.dataset.filterTopic;
                     button.setAttribute('aria-pressed', topicActive ? 'true' : 'false');
                 });
@@ -92,6 +93,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 function activateFilter(topic) {
+                    var feedback = card.querySelector('.mh-seminar-card__topic-feedback');
+                    if (feedback) feedback.textContent = '';
                     shell.querySelector('[data-filter-main="' + mainFilter + '"]').click();
                     shell.querySelector('[data-filter-group="' + mainFilter + '"] [data-filter-sub="' + filter + '"]').click();
                     if (topic) {
@@ -118,6 +121,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 card.querySelectorAll('[data-mh-card-topic]').forEach(function (button) {
                     button.addEventListener('click', function () {
+                        if (button.hasAttribute('data-mh-topic-unavailable')) {
+                            var feedback = card.querySelector('.mh-seminar-card__topic-feedback');
+                            if (!feedback) {
+                                console.error('Die Rückmeldung zum Seminarthema fehlt.');
+                                return;
+                            }
+                            feedback.textContent = 'Momentan unverfügbar.';
+                            return;
+                        }
                         activateFilter(button.dataset.mhCardTopic);
                     });
                 });

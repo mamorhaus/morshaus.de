@@ -17,6 +17,9 @@ Bei reduzierter Bewegung bleibt es möglichst in der Bildschirmmitte.
 Seminartermine: Weise dem Termin die passende Veranstaltungskategorie zu, z. B.
 „Am Tisch > Grundlagen“ oder „In Stille > Bogen/Zeremonie“. Die Themenauswahl
 auf der Seminarseite filtert nach diesen Kategorien.
+Unter „Veranstaltungen > Seminar-Verfügbarkeit“ lässt sich Bogenschießen
+separat freigeben oder sperren; seine Termine können gesperrt nicht neu zur
+Bestellliste hinzugefügt werden.
 Die Rückmeldung zum Hinzufügen eines Termins erscheint neben dem
 Bestelllisten-Button und blendet sich nach drei Sekunden aus.
 

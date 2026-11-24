@@ -27,6 +27,10 @@ body.page-id-284 .mh-page{max-width:980px;margin-left:0;margin-right:0}
 .mh-seminar-card__topics button{min-height:36px;padding:5px 10px;border:1px solid var(--mh-color-line);border-radius:999px;background:rgba(255,255,255,.55);color:#344331;font:inherit;font-size:14px;cursor:pointer}
 .mh-seminar-card__topics button:hover{border-color:#52684c}
 .mh-seminar-card__topics button[aria-pressed="true"]{border-color:#52684c;background:#52684c;color:#fff}
+.mh-seminar-card__topics button[data-mh-topic-unavailable]{border-color:#b42424;background:#b42424;color:#fff}
+.mh-seminar-card__topics button[data-mh-topic-unavailable]:hover{border-color:#861818;background:#861818}
+.mh-seminar-card__topic-feedback{flex-basis:100%;color:#9e2020;font-size:14px;font-weight:700;line-height:1.4}
+.mh-seminar-card__topic-feedback:empty{display:none}
 .mh-seminar-card__topics button:focus-visible{outline:2px solid var(--mh-color-sage);outline-offset:3px}
 
 .mh-begegnung-note{margin:40px 0!important;padding:22px 26px;border:2px solid rgba(255,255,255,.8);border-radius:var(--mh-radius-lg);background:var(--mh-color-panel);color:var(--mh-color-white);font-size:19px;font-weight:700;text-align:center}

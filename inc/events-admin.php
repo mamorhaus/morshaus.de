@@ -40,6 +40,7 @@ function morshaus_seminar_availability_labels() {
         'in-stille' => 'In der Stille',
         'im-wald' => 'Im Wald',
         'auf-dem-wasser' => 'Auf dem Wasser',
+        'bogen' => 'Bogenschießen',
     );
 }
 
@@ -50,7 +51,7 @@ function morshaus_render_seminar_availability_admin_page() {
     ?>
     <div class="wrap">
         <h1>Seminar-Verfügbarkeit</h1>
-        <p>Als unverfügbar markierte Seminarwelten erhalten ein Banner. Ihre Termine können nicht neu zur Bestellliste hinzugefügt werden.</p>
+        <p>Als unverfügbar markierte Seminarwelten erhalten ein Banner. Für Bogenschießen wird das Thema markiert. Die jeweiligen Termine können nicht neu zur Bestellliste hinzugefügt werden.</p>
         <?php if (isset($_GET['saved']) && $_GET['saved'] === '1') : ?>
             <div class="notice notice-success is-dismissible"><p>Die Seminar-Verfügbarkeit wurde gespeichert.</p></div>
         <?php endif; ?>

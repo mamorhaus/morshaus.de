@@ -82,8 +82,11 @@ function morshaus_pilot_seminar_unavailable($filter) {
         'im-wald' => 'im-wald',
         'auf-dem-wasser' => 'auf-dem-wasser',
     );
-    if (!isset($cards[$filter])) return false;
     $settings = get_option('morshaus_seminar_unavailable', array());
+    if ($filter === 'bogen') {
+        return !is_array($settings) || !array_key_exists($filter, $settings) || $settings[$filter] === '1';
+    }
+    if (!isset($cards[$filter])) return false;
     if (is_array($settings) && array_key_exists($filter, $settings)) {
         return $settings[$filter] === '1';
     }

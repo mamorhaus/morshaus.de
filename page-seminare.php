@@ -83,8 +83,12 @@ get_header();
                                     <?php if (isset($topics[$filter])) : ?>
                                         <div class="mh-seminar-card__topics" role="group" aria-label="<?php echo esc_attr('Themen für ' . $title); ?>">
                                             <?php foreach ($topics[$filter] as $slug => $label) : ?>
-                                                <button type="button" data-mh-card-topic="<?php echo esc_attr($slug); ?>" aria-pressed="false"><?php echo esc_html($label); ?></button>
+                                                <?php $topic_unavailable = $slug === 'bogen' && morshaus_pilot_seminar_unavailable('bogen'); ?>
+                                                <button type="button" data-mh-card-topic="<?php echo esc_attr($slug); ?>" <?php if ($topic_unavailable) : ?>data-mh-topic-unavailable aria-label="<?php echo esc_attr($label . ' – momentan unverfügbar'); ?>" aria-describedby="mh-bogen-feedback"<?php else : ?>aria-pressed="false"<?php endif; ?>><?php echo esc_html($label); ?></button>
                                             <?php endforeach; ?>
+                                            <?php if ($filter === 'in-stille' && morshaus_pilot_seminar_unavailable('bogen')) : ?>
+                                                <span id="mh-bogen-feedback" class="mh-seminar-card__topic-feedback" role="status" aria-live="polite"></span>
+                                            <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
