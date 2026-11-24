@@ -204,12 +204,29 @@ function morshaus_sanitize_aufguesse($raw, $unslash = false) {
         }
         $temperatur = $item['temperatur'] ?? '';
         $dauer = $item['dauer'] ?? '';
+        if ($unslash && $temperatur === '' && isset($item['temperatur_alt']) && is_string($item['temperatur_alt'])) $temperatur = $item['temperatur_alt'];
+        if ($unslash && $dauer === '' && isset($item['dauer_alt']) && is_string($item['dauer_alt'])) $dauer = $item['dauer_alt'];
         $temperatur = sanitize_text_field($unslash ? wp_unslash($temperatur) : $temperatur);
         $dauer = sanitize_text_field($unslash ? wp_unslash($dauer) : $dauer);
+        $temperatur = morshaus_aufguss_zahl($temperatur, 'temperatur');
+        $dauer = morshaus_aufguss_zahl($dauer, 'dauer');
         if ($temperatur === '' && $dauer === '') continue;
         $aufguesse[] = array('temperatur' => $temperatur, 'dauer' => $dauer);
     }
     return $aufguesse;
+}
+
+function morshaus_aufguss_zahl($value, $field) {
+    $value = trim((string) $value);
+    $unit = $field === 'temperatur' ? '(?:°\s*C?)' : '(?:s(?:ek(?:unden?)?\.?)?)';
+    if (preg_match('/^(\d+(?:[.,]\d+)?)\s*' . $unit . '?$/iu', $value, $match)) {
+        return $match[1];
+    }
+    return $value;
+}
+
+function morshaus_aufguss_ist_zahl($value) {
+    return $value === '' || (is_string($value) && preg_match('/^\d+(?:[.,]\d+)?$/D', $value));
 }
 
 function morshaus_pilot_feature_icon($icon) {
@@ -255,6 +272,7 @@ function morshaus_pilot_product_payload($product) {
         foreach ((array) ($edition['modelle'] ?? array()) as $model) {
             $preparation = (string) ($model['zubereitung'] ?? '');
             $knowledge = (string) ($model['wissenswertes'] ?? '');
+            $knowledge_title = sanitize_text_field($model['wissenswertes_titel'] ?? '');
             // Ältere Produkte speichern die Zubereitung im gemeinsamen Wissenswertes-Feld.
             if (trim($preparation) === '' && preg_match('~<strong>\s*Zubereitung\s*:?\s*</strong>\s*(.*?)(?=<strong>|$)~isu', $knowledge, $match)) {
                 $preparation = trim($match[1]);
@@ -325,6 +343,8 @@ function morshaus_pilot_product_payload($product) {
                 'preparation' => wpautop(wp_kses_post($preparation)),
                 'infusions' => $is_tea ? morshaus_sanitize_aufguesse($model['aufguesse'] ?? array()) : array(),
                 'knowledge' => wpautop(wp_kses_post($knowledge)),
+                'knowledgeTitle' => $knowledge_title !== '' ? $knowledge_title : 'Wissenswertes',
+                'knowledgeEnabled' => isset($model['wissenswertes_aktiv']) ? !empty($model['wissenswertes_aktiv']) : trim($knowledge) !== '',
                 'features' => $features,
                 'images' => $images,
                 'quantities' => $quantities,

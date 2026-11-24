@@ -24,16 +24,20 @@ Produkte: Die Sencha-Seite nutzt die vorhandenen Produktdaten und Medien aus
 WordPress. Unter „Produkte“ können Ausführungen, Modelle, Mengen, Preise,
 Extras und Texte bearbeitet werden. Ältere Tee-Ausführungen „Einfach“ und
 „Besonders“ werden als „Alltag“ und „Erlesen“ angezeigt. Ältere Zubereitungen
-im Feld „Wissenswertes“ bleiben erhalten; entsprechend gekennzeichnete
-Geschmacks- und Zubereitungsangaben stehen in ihren jeweiligen Reitern. Beschreibung und
+im Feld „Wissenswertes“ bleiben gespeichert. Beschreibung und
 Merkmale stehen bei Tee und Utensilien unter der Beschreibung oberhalb des
 Bestellblocks; Tee hat zusätzlich einen Geschmacksreiter.
-Zubereitung erscheint, wo sie relevant ist.
+Der zusätzliche Reiter kann pro Variante für Tee und Utensilien benannt und
+über eine Checkbox ein- oder ausgeblendet werden. Vorhandenes Wissenswertes
+ist zunächst aktiviert und heißt standardmäßig „Wissenswertes“.
 Im Produkt-Admin lassen sich für jede Teevariante unter „Aufgüsse“ beliebig
-viele Aufgüsse mit Temperatur und Ziehzeit einschließlich Einheit eintragen
-(z. B. „70 °C“ und „60 Sek.“). Die Reihenfolge entspricht der Anzeige;
+viele Aufgüsse mit Temperatur und Ziehzeit als Zahlen eintragen
+(z. B. „70“ und „60“). Auf der Produktseite erscheinen automatisch „°“ und
+„s“. Die Reihenfolge entspricht der Anzeige;
 einzelne Angaben dürfen leer bleiben, vollständig leere Zeilen werden entfernt.
-Der Zubereitungstext bleibt zusätzlich sichtbar.
+Ältere Angaben mit Bereichen oder Text bleiben erhalten und können durch
+Zahlen ersetzt werden; einfache Angaben mit Einheit werden übernommen.
+Alte Zubereitungstexte bleiben gespeichert, werden bei Tee aber nicht angezeigt.
 Die Piktogramme der Produktmerkmale entsprechen der Auswahl in der Verwaltung;
 die Beschreibung wird vollständig angezeigt und nicht automatisch gekürzt.
 Aktivierte Merkmal-Hinweise erscheinen als Tooltip am Info-Symbol. Bilder für

@@ -41,10 +41,12 @@
                                         <button type="button" role="tab" id="mh-tab-description" aria-controls="mh-panel-description" aria-selected="true">Beschreibung</button>
                                         <button type="button" role="tab" id="mh-tab-taste" aria-controls="mh-panel-taste" aria-selected="false" tabindex="-1">Geschmack</button>
                                         <button type="button" role="tab" id="mh-tab-preparation" aria-controls="mh-panel-preparation" aria-selected="false" tabindex="-1">Zubereitung</button>
+                                        <button type="button" role="tab" id="mh-tab-knowledge" aria-controls="mh-panel-knowledge" aria-selected="false" tabindex="-1" hidden>Wissenswertes</button>
                                     </div>
                                     <div id="mh-panel-description" class="mh-product__panel mh-product__description" role="tabpanel" aria-labelledby="mh-tab-description" tabindex="0"></div>
                                     <div id="mh-panel-taste" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-taste" tabindex="0" hidden></div>
                                     <div id="mh-panel-preparation" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-preparation" tabindex="0" hidden></div>
+                                    <div id="mh-panel-knowledge" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-knowledge" tabindex="0" hidden></div>
                                 </section>
                             </div>
                             <section class="mh-product__purchase" aria-label="Bestellung">

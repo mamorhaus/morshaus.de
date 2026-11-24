@@ -434,10 +434,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     /^Zubereitung\s*:?$/i.test(heading.textContent.trim()) && text === preparationText &&
                     !paragraph.querySelector('a, img, video, audio')) paragraph.remove();
             });
-            if (knowledge.textContent.replace(/Geschmack\s*:\s*|Zubereitung\s*:\s*/gi, '').trim() ||
-                knowledge.querySelector('img, video, audio')) {
-                description.appendChild(knowledge);
-            }
+            var knowledgeTab = product.querySelector('#mh-tab-knowledge');
+            knowledgeTab.textContent = current.knowledgeTitle || 'Wissenswertes';
+            knowledgeTab.hidden = !current.knowledgeEnabled;
+            product.querySelector('#mh-panel-knowledge').replaceChildren(knowledge);
+            if (knowledgeTab.hidden && knowledgeTab.getAttribute('aria-selected') === 'true') setTab('description', false);
             renderFeatures(current.features);
             var preparationPanel = product.querySelector('#mh-panel-preparation');
             var preparationTab = product.querySelector('#mh-tab-preparation');
@@ -452,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     number.className = 'mh-product__infusion-number';
                     number.textContent = (index + 1) + '. Aufguss';
                     row.appendChild(number);
-                    [['temperatur', 'Temperatur', 'temperature'], ['dauer', 'Ziehzeit', 'duration']].forEach(function (field) {
+                    [['temperatur', 'Temperatur', 'temperature', '°'], ['dauer', 'Ziehzeit', 'duration', ' s']].forEach(function (field) {
                         var detail = document.createElement('span');
                         detail.className = 'mh-product__infusion-detail';
                         if (infusion[field[0]]) {
@@ -464,7 +465,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             label.className = 'mh-product__infusion-label';
                             label.textContent = field[1] + ': ';
                             var value = document.createElement('span');
-                            value.textContent = infusion[field[0]];
+                            var raw = infusion[field[0]];
+                            value.textContent = raw + (/^\d+(?:[.,]\d+)?$/.test(raw) ? field[3] : '');
                             detail.append(icon, label, value);
                         }
                         row.appendChild(detail);
@@ -473,11 +475,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 preparationPanel.appendChild(list);
             }
-            if (current.preparation) {
+            if (!isTea && current.preparation) {
                 preparation.className = 'mh-product__preparation-text';
                 preparationPanel.appendChild(preparation);
-            } else if (!infusions.length) {
-                preparationPanel.innerHTML = '<p>Angaben zur Zubereitung werden ergänzt.</p>';
             }
             preparationTab.hidden = !isTea && !preparationText && !preparation.querySelector('img, video, audio');
             if (preparationTab.hidden && preparationTab.getAttribute('aria-selected') === 'true') setTab('description', false);
