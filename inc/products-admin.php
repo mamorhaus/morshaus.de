@@ -92,6 +92,27 @@ function morshaus_render_merkmale_admin($name_prefix, $merkmale = array()) {
     <?php
 }
 
+function morshaus_render_aufguesse_admin($name_prefix, $aufguesse = array()) {
+    ?>
+    <div class="morshaus-tee-inhalte-section morshaus-tee-mengen-only morshaus-aufguesse">
+        <strong>Aufgüsse</strong>
+        <p class="description">Temperatur und Ziehzeit je Aufguss. Leere Angaben werden nicht angezeigt.</p>
+        <input type="hidden" name="<?php echo esc_attr($name_prefix); ?>[aufguesse_marker]" value="1">
+        <div class="morshaus-aufguesse-rows">
+            <?php foreach ((array) $aufguesse as $i => $aufguss) : ?>
+                <div class="morshaus-aufguss-row">
+                    <strong class="morshaus-aufguss-number"><?php echo esc_html(($i + 1) . '. Aufguss'); ?></strong>
+                    <label>Temperatur <input type="text" name="<?php echo esc_attr($name_prefix); ?>[aufguesse][<?php echo esc_attr($i); ?>][temperatur]" value="<?php echo esc_attr($aufguss['temperatur'] ?? ''); ?>" placeholder="z. B. 70 °C"></label>
+                    <label>Ziehzeit <input type="text" name="<?php echo esc_attr($name_prefix); ?>[aufguesse][<?php echo esc_attr($i); ?>][dauer]" value="<?php echo esc_attr($aufguss['dauer'] ?? ''); ?>" placeholder="z. B. 60 Sek."></label>
+                    <button type="button" class="button morshaus-remove-aufguss">Entfernen</button>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <button type="button" class="button morshaus-add-aufguss">+ Aufguss hinzufügen</button>
+    </div>
+    <?php
+}
+
 function morshaus_render_produkte_admin_page() {
     wp_enqueue_editor();
     if (!current_user_can('manage_options')) {
@@ -274,6 +295,7 @@ function morshaus_render_produkte_admin_page() {
                                 'wissenswertes' => isset($modell_raw['wissenswertes']) ? wp_kses_post(wp_unslash($modell_raw['wissenswertes'])) : (isset($modell_raw['geschmack']) ? wp_kses_post(wp_unslash($modell_raw['geschmack'])) : ''),
                                 'geschmack' => isset($modell_raw['geschmack']) ? wp_kses_post(wp_unslash($modell_raw['geschmack'])) : '',
                                 'zubereitung' => isset($modell_raw['zubereitung']) ? wp_kses_post(wp_unslash($modell_raw['zubereitung'])) : '',
+                                'aufguesse' => morshaus_sanitize_aufguesse($modell_raw['aufguesse'] ?? array(), true),
                                 'preis' => number_format((float)$preis_raw, 2, '.', ''),
                                 'mengen' => $modell_mengen,
                                 'galerie' => array_values(array_unique($galerie)),
@@ -413,6 +435,7 @@ function morshaus_render_produkte_admin_page() {
             .morshaus-veredelung-option input[type="text"]{width:70px}.morshaus-branding-admin-option{grid-template-columns:1fr auto}.morshaus-branding-image-slot{grid-column:1/-1;display:flex;align-items:center;gap:8px}.morshaus-branding-image-preview{width:72px;height:72px;border:1px dashed #aaa;background:#fff}.morshaus-branding-image-preview img{width:100%;height:100%;object-fit:cover}
             .morshaus-euro-field{display:inline-flex;align-items:center;gap:6px}
             .morshaus-tee-inhalte-admin{grid-column:1/-1;padding:16px;background:#fff;border:1px solid #c3c4c7;border-radius:9px}.morshaus-tee-inhalte-admin>h3{margin:0 0 14px}.morshaus-tee-inhalte-section{padding:14px 0;border-top:1px solid #dcdcde}.morshaus-tee-inhalte-section:first-of-type{border-top:0;padding-top:0}.morshaus-tee-inhalte-section>strong{display:block;margin-bottom:8px;font-size:14px}.morshaus-tee-detailfelder{display:grid;grid-template-columns:1fr 1fr;gap:14px}.morshaus-tee-editor{min-width:0}.morshaus-tee-editor .wp-editor-area{min-height:220px!important}@media(max-width:1100px){.morshaus-tee-detailfelder{grid-template-columns:1fr}}
+            .morshaus-aufguss-row{display:flex;align-items:end;flex-wrap:wrap;gap:10px;margin:12px 0}.morshaus-aufguss-number{min-width:85px;align-self:center}.morshaus-aufguss-row label{display:flex;flex-direction:column;gap:4px}.morshaus-aufguss-row input{width:150px;max-width:100%}
             .morshaus-galerie-preview, .morshaus-detailgalerie-preview { grid-column:1/-1; display:flex; gap:8px; flex-wrap:wrap; }
             .morshaus-galerie-preview img, .morshaus-detailgalerie-preview img { width:64px; height:64px; object-fit:cover; border:1px solid #ccd0d4; }
             .morshaus-merkmal-row { display:grid; grid-template-columns:190px 1fr 1fr auto minmax(240px,1.4fr); gap:10px; margin:8px 0; align-items:center; }
@@ -540,6 +563,7 @@ function morshaus_render_produkte_admin_page() {
                                             <div class="morshaus-tee-editor"><strong>Wissenswertes</strong><?php $editor_id='morshaus_wissenswertes_'.$a_index.'_'.$m_index; wp_editor($wissenswertes,$editor_id,array('textarea_name'=>'morshaus_ausfuehrungen['.$a_index.'][modelle]['.$m_index.'][wissenswertes]','textarea_rows'=>10,'media_buttons'=>false,'teeny'=>false,'quicktags'=>true)); ?></div>
                                             <div class="morshaus-tee-editor"><strong>Zubereitung</strong><?php $editor_id='morshaus_zubereitung_'.$a_index.'_'.$m_index; wp_editor($zubereitung,$editor_id,array('textarea_name'=>'morshaus_ausfuehrungen['.$a_index.'][modelle]['.$m_index.'][zubereitung]','textarea_rows'=>10,'media_buttons'=>false,'teeny'=>false,'quicktags'=>true)); ?></div>
                                         </div>
+                                        <?php morshaus_render_aufguesse_admin('morshaus_ausfuehrungen[' . $a_index . '][modelle][' . $m_index . ']', morshaus_sanitize_aufguesse($modell['aufguesse'] ?? array())); ?>
                                     </div>
                                     <div class="morshaus-extras-admin">
                                         <div class="morshaus-extras-head"><strong>Extras</strong><span class="description">Jede Karte aktiviert das Extra und enthält Preis sowie Bild.</span></div>
@@ -756,13 +780,28 @@ function morshaus_render_produkte_admin_page() {
 
                 const ausfWrap = document.getElementById('morshaus-ausfuehrungen-wrap');
                 const addAusf = document.getElementById('morshaus-add-ausfuehrung');
+                function aufguesseHtml(prefix) {
+                    return `<div class="morshaus-tee-inhalte-section morshaus-tee-mengen-only morshaus-aufguesse"><strong>Aufgüsse</strong><p class="description">Temperatur und Ziehzeit je Aufguss. Leere Angaben werden nicht angezeigt.</p><input type="hidden" name="${prefix}[aufguesse_marker]" value="1"><div class="morshaus-aufguesse-rows"></div><button type="button" class="button morshaus-add-aufguss">+ Aufguss hinzufügen</button></div>`;
+                }
+                function reindexAufguesse(section) {
+                    section.querySelectorAll('.morshaus-aufguss-row').forEach(function(row, index) {
+                        const label = (index + 1) + '. Aufguss';
+                        row.querySelector('.morshaus-aufguss-number').textContent = label;
+                        row.querySelectorAll('input').forEach(function(input) {
+                            input.name = input.name.replace(/\[aufguesse\]\[\d+\]/, '[aufguesse][' + index + ']');
+                            input.setAttribute('aria-label', (input.name.endsWith('[temperatur]') ? 'Temperatur' : 'Ziehzeit') + ' für ' + label);
+                        });
+                        row.querySelector('.morshaus-remove-aufguss').setAttribute('aria-label', label + ' entfernen');
+                    });
+                }
+                if (ausfWrap) ausfWrap.querySelectorAll('.morshaus-aufguesse').forEach(reindexAufguesse);
                 function merkmaleHtml(prefix) { const icons={lineal:'Lineal',blatt:'Blatt',schichten:'Schichten',funkeln:'Funkeln',thermometer:'Thermometer',standort:'Standort',kalender:'Kalender',wellen:'Wellen / Verarbeitung',ziel:'Ziel / Genauigkeit',material:'Material',gefaess:'Gefäß',kreis:'Kreis / Durchmesser'}; return `<div class="morshaus-merkmale-wrap"><strong>Produktmerkmale</strong><p class="description">Bis zu vier frei benennbare Merkmale.</p>${[0,1,2,3].map(i=>`<div class="morshaus-merkmal-row"><select name="${prefix}[merkmale][${i}][icon]">${Object.entries(icons).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><input type="text" name="${prefix}[merkmale][${i}][label]" placeholder="Bezeichnung"><input type="text" name="${prefix}[merkmale][${i}][wert]" placeholder="Wert"><label class="morshaus-tooltip-toggle"><input type="checkbox" name="${prefix}[merkmale][${i}][tooltip_aktiv]" value="1"> Tooltip</label><input type="text" class="morshaus-tooltip-text" name="${prefix}[merkmale][${i}][tooltip_text]" placeholder="Text der Hinweisbox"></div>`).join('')}</div>`; }
                 function mengenHtml(ai, mi) { return `<div class="morshaus-tee-mengen-only"><h3>Mengen und Preise</h3><div class="morshaus-mengen-wrap">${['10g','50g','100g'].map(m=>`<div class="morshaus-menge-row"><label><input type="checkbox" class="morshaus-menge-checkbox" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][mengen][${m}][aktiv]" value="1"> ${m}</label><input type="text" class="morshaus-menge-preis" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][mengen][${m}][preis]" placeholder="Preis" disabled><label><input type="checkbox" class="morshaus-menge-unverfuegbar" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][mengen][${m}][unverfuegbar]" value="1" disabled> unverfügbar</label>${m==='50g'||m==='100g'?`<label><input type="checkbox" class="morshaus-menge-aromaschutz" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][mengen][${m}][aromaschutzbeutel]" value="1" disabled> Aromaschutzbeutel</label>`:''}</div>`).join('')}</div></div>`; }
                 function modellHtml(ai, mi) {
                     return `<div class="morshaus-modell-card">
                         <div class="morshaus-modell-head"><div class="morshaus-modell-title"><button type="button" class="button morshaus-collapse-toggle" aria-expanded="true">▾</button><input type="text" class="morshaus-modell-name" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][name]" placeholder="Variantenname"></div><div class="morshaus-modell-actions"><button type="button" class="button morshaus-duplicate-modell">Duplizieren</button><button type="button" class="button morshaus-remove-modell">Entfernen</button></div></div>
                         <div class="morshaus-modell-body"><input type="text" class="morshaus-varianten-grundpreis" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][preis]" placeholder="Preis">${mengenHtml(ai,mi)}
-                        <label class="morshaus-beschreibung-field"><strong>Beschreibung</strong><textarea name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][beschreibung]" placeholder="Produktbeschreibung"></textarea></label><div class="morshaus-tee-inhalte-admin"><h3>Teespezifische Inhalte</h3><div class="morshaus-tee-inhalte-section"><strong>Charakter</strong>${merkmaleHtml(`morshaus_ausfuehrungen[${ai}][modelle][${mi}]`)}</div><div class="morshaus-tee-inhalte-section morshaus-tee-detailfelder"><div class="morshaus-tee-editor"><strong>Geschmack</strong><textarea id="morshaus_geschmack_${ai}_${mi}_${Date.now()}" class="morshaus-wissenswertes-source" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][geschmack]" rows="10"></textarea></div><div class="morshaus-tee-editor"><strong>Wissenswertes</strong><textarea id="morshaus_wissenswertes_${ai}_${mi}_${Date.now()}" class="morshaus-wissenswertes-source" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][wissenswertes]" rows="10"></textarea></div><div class="morshaus-tee-editor"><strong>Zubereitung</strong><textarea id="morshaus_zubereitung_${ai}_${mi}_${Date.now()}" class="morshaus-wissenswertes-source" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][zubereitung]" rows="10"></textarea></div></div></div>
+                        <label class="morshaus-beschreibung-field"><strong>Beschreibung</strong><textarea name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][beschreibung]" placeholder="Produktbeschreibung"></textarea></label><div class="morshaus-tee-inhalte-admin"><h3>Teespezifische Inhalte</h3><div class="morshaus-tee-inhalte-section"><strong>Charakter</strong>${merkmaleHtml(`morshaus_ausfuehrungen[${ai}][modelle][${mi}]`)}</div><div class="morshaus-tee-inhalte-section morshaus-tee-detailfelder"><div class="morshaus-tee-editor"><strong>Geschmack</strong><textarea id="morshaus_geschmack_${ai}_${mi}_${Date.now()}" class="morshaus-wissenswertes-source" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][geschmack]" rows="10"></textarea></div><div class="morshaus-tee-editor"><strong>Wissenswertes</strong><textarea id="morshaus_wissenswertes_${ai}_${mi}_${Date.now()}" class="morshaus-wissenswertes-source" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][wissenswertes]" rows="10"></textarea></div><div class="morshaus-tee-editor"><strong>Zubereitung</strong><textarea id="morshaus_zubereitung_${ai}_${mi}_${Date.now()}" class="morshaus-wissenswertes-source" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][zubereitung]" rows="10"></textarea></div></div>${aufguesseHtml(`morshaus_ausfuehrungen[${ai}][modelle][${mi}]`)}</div>
                         <div class="morshaus-extras-admin"><div class="morshaus-extras-head"><strong>Extras</strong><span class="description">Jede Karte aktiviert das Extra und enthält Preis sowie Bild.</span></div><fieldset class="morshaus-veredelung-options">${[{key:'dose',label:'Dose',group:'extra',price:'0,00'},{key:'klammer',label:'Klammer',group:'extra',price:'0,50'},{key:'teeblatt',label:'Teeblatt',group:'branding',price:'0,00'},{key:'morshaus',label:'Morshaus',group:'branding',price:'0,00'}].map(x=>`<div class="morshaus-veredelung-option morshaus-branding-admin-option"><label><input type="checkbox" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][${x.group==='extra'?'extra_typen':'branding_arten'}][]" value="${x.key}"> <span>${x.label}</span></label><span class="morshaus-euro-field"><input type="text" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][${x.group==='extra'?'extra_preise':'branding_preise'}][${x.key}]" value="${x.price}"><span>€</span></span><div class="morshaus-branding-image-slot"><input type="hidden" class="morshaus-branding-image-id" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][${x.group==='extra'?'extra_bilder':'branding_bilder'}][${x.key}]"><div class="morshaus-branding-image-preview"></div><button type="button" class="button morshaus-select-branding-image">Bild wählen</button><button type="button" class="button-link-delete morshaus-remove-branding-image" hidden>Entfernen</button></div></div>`).join('')}</fieldset></div>
                         <input type="hidden" class="morshaus-galerie-ids" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][galerie]"><div class="morshaus-galerie-preview"></div><button type="button" class="button morshaus-select-gallery">Varianten-/Vorschaubilder wählen</button>
                         <input type="hidden" class="morshaus-detailgalerie-ids" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][detailgalerie]"><div class="morshaus-detailgalerie-preview"></div><button type="button" class="button morshaus-select-detailgallery">Zoom-/Detailbilder wählen (Mehrfachauswahl)</button><label><input type="checkbox" name="morshaus_ausfuehrungen[${ai}][modelle][${mi}][unverfuegbar]" value="1"> unverfügbar</label></div></div>`;
@@ -803,6 +842,23 @@ function morshaus_render_produkte_admin_page() {
                     ausfWrap.addEventListener('click', function(e) {
                         const card=e.target.closest('.morshaus-ausfuehrung-card');
                         if (!card) return;
+                        if (e.target.classList.contains('morshaus-add-aufguss')) {
+                            const section=e.target.closest('.morshaus-aufguesse');
+                            const rows=section.querySelector('.morshaus-aufguesse-rows');
+                            const prefix=section.querySelector('input[type="hidden"]').name.replace(/\[aufguesse_marker\]$/, '');
+                            const index=rows.children.length;
+                            rows.insertAdjacentHTML('beforeend', `<div class="morshaus-aufguss-row"><strong class="morshaus-aufguss-number"></strong><label>Temperatur <input type="text" name="${prefix}[aufguesse][${index}][temperatur]" placeholder="z. B. 70 °C"></label><label>Ziehzeit <input type="text" name="${prefix}[aufguesse][${index}][dauer]" placeholder="z. B. 60 Sek."></label><button type="button" class="button morshaus-remove-aufguss">Entfernen</button></div>`);
+                            reindexAufguesse(section);
+                            rows.lastElementChild.querySelector('input').focus();
+                            return;
+                        }
+                        if (e.target.classList.contains('morshaus-remove-aufguss')) {
+                            const section=e.target.closest('.morshaus-aufguesse');
+                            e.target.closest('.morshaus-aufguss-row').remove();
+                            reindexAufguesse(section);
+                            section.querySelector('.morshaus-add-aufguss').focus();
+                            return;
+                        }
                         if (e.target.classList.contains('morshaus-collapse-toggle')) { const target=e.target.closest('.morshaus-modell-card') || card; target.classList.toggle('is-collapsed'); const collapsed=target.classList.contains('is-collapsed'); e.target.textContent=collapsed?'▸':'▾'; e.target.setAttribute('aria-expanded',collapsed?'false':'true'); return; }
                         if (e.target.classList.contains('morshaus-duplicate-ausfuehrung')) { if(window.tinyMCE) tinyMCE.triggerSave(); const clone=card.cloneNode(true); clone.querySelectorAll('.wp-editor-wrap').forEach(function(w){const ta=w.querySelector('textarea');if(ta){const fresh=ta.cloneNode(true);fresh.classList.add('morshaus-wissenswertes-source');fresh.dataset.editorReady='';fresh.id=fresh.id+'_copy_'+Date.now();w.replaceWith(fresh);}}); copyName(clone.querySelector('.morshaus-ausfuehrung-name')); clone.classList.remove('is-collapsed'); card.after(clone); reindexAdminCards(); refreshCategoryUi(false); initWissenswertesEditor(clone); return; }
                         if (e.target.classList.contains('morshaus-duplicate-modell')) { if(window.tinyMCE) tinyMCE.triggerSave(); const model=e.target.closest('.morshaus-modell-card'); const clone=model.cloneNode(true); clone.querySelectorAll('.wp-editor-wrap').forEach(function(w){const ta=w.querySelector('textarea');if(ta){const fresh=ta.cloneNode(true);fresh.classList.add('morshaus-wissenswertes-source');fresh.dataset.editorReady='';fresh.id=fresh.id+'_copy_'+Date.now();w.replaceWith(fresh);}}); copyName(clone.querySelector('.morshaus-modell-name')); clone.classList.remove('is-collapsed'); model.after(clone); reindexAdminCards(); refreshCategoryUi(false); initWissenswertesEditor(clone); return; }
@@ -1029,7 +1085,7 @@ function morshaus_render_produkte_admin_page() {
                                 refreshStatuses();initSortables();markDirty();
                             },0);
                         }
-                        if(e.target.closest('.morshaus-remove-ausfuehrung,.morshaus-remove-modell,.morshaus-remove-branding-image,.morshaus-select-gallery,.morshaus-select-detailgallery'))setTimeout(function(){refreshStatuses();initSortables();markDirty();},50);
+                        if(e.target.closest('.morshaus-remove-ausfuehrung,.morshaus-remove-modell,.morshaus-remove-branding-image,.morshaus-select-gallery,.morshaus-select-detailgallery,.morshaus-add-aufguss,.morshaus-remove-aufguss'))setTimeout(function(){refreshStatuses();initSortables();markDirty();},50);
                     });
                     document.querySelectorAll('.morshaus-ausfuehrung-card,.morshaus-modell-card').forEach(card=>card.dataset.mhKnown='1');
                     if(adminForm)adminForm.addEventListener('submit',function(){if(window.tinyMCE)window.tinyMCE.triggerSave();morshausDirty=false;});

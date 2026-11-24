@@ -441,7 +441,44 @@ document.addEventListener('DOMContentLoaded', function () {
             renderFeatures(current.features);
             var preparationPanel = product.querySelector('#mh-panel-preparation');
             var preparationTab = product.querySelector('#mh-tab-preparation');
-            preparationPanel.innerHTML = current.preparation || '<p>Angaben zur Zubereitung werden ergänzt.</p>';
+            var infusions = isTea && Array.isArray(current.infusions) ? current.infusions : [];
+            preparationPanel.replaceChildren();
+            if (infusions.length) {
+                var list = document.createElement('ol');
+                list.className = 'mh-product__infusions';
+                infusions.forEach(function (infusion, index) {
+                    var row = document.createElement('li');
+                    var number = document.createElement('span');
+                    number.className = 'mh-product__infusion-number';
+                    number.textContent = (index + 1) + '. Aufguss';
+                    row.appendChild(number);
+                    [['temperatur', 'Temperatur', 'temperature'], ['dauer', 'Ziehzeit', 'duration']].forEach(function (field) {
+                        var detail = document.createElement('span');
+                        detail.className = 'mh-product__infusion-detail';
+                        if (infusion[field[0]]) {
+                            var icon = document.createElement('span');
+                            icon.className = 'mh-product__infusion-icon';
+                            icon.setAttribute('aria-hidden', 'true');
+                            icon.innerHTML = data.preparationIcons[field[2]];
+                            var label = document.createElement('span');
+                            label.className = 'mh-product__infusion-label';
+                            label.textContent = field[1] + ': ';
+                            var value = document.createElement('span');
+                            value.textContent = infusion[field[0]];
+                            detail.append(icon, label, value);
+                        }
+                        row.appendChild(detail);
+                    });
+                    list.appendChild(row);
+                });
+                preparationPanel.appendChild(list);
+            }
+            if (current.preparation) {
+                preparation.className = 'mh-product__preparation-text';
+                preparationPanel.appendChild(preparation);
+            } else if (!infusions.length) {
+                preparationPanel.innerHTML = '<p>Angaben zur Zubereitung werden ergänzt.</p>';
+            }
             preparationTab.hidden = !isTea && !preparationText && !preparation.querySelector('img, video, audio');
             if (preparationTab.hidden && preparationTab.getAttribute('aria-selected') === 'true') setTab('description', false);
             select.replaceChildren();

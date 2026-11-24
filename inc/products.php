@@ -191,6 +191,27 @@ function morshaus_sanitize_merkmale($raw) {
     return $features;
 }
 
+function morshaus_sanitize_aufguesse($raw, $unslash = false) {
+    if (!is_array($raw)) {
+        error_log('Morshaus: Ungültige Aufgussdaten in der Produktverwaltung.');
+        return array();
+    }
+    $aufguesse = array();
+    foreach ($raw as $item) {
+        if (!is_array($item) || !is_string($item['temperatur'] ?? '') || !is_string($item['dauer'] ?? '')) {
+            error_log('Morshaus: Ungültige Aufgussdaten in der Produktverwaltung.');
+            continue;
+        }
+        $temperatur = $item['temperatur'] ?? '';
+        $dauer = $item['dauer'] ?? '';
+        $temperatur = sanitize_text_field($unslash ? wp_unslash($temperatur) : $temperatur);
+        $dauer = sanitize_text_field($unslash ? wp_unslash($dauer) : $dauer);
+        if ($temperatur === '' && $dauer === '') continue;
+        $aufguesse[] = array('temperatur' => $temperatur, 'dauer' => $dauer);
+    }
+    return $aufguesse;
+}
+
 function morshaus_pilot_feature_icon($icon) {
     $icons = array(
         'lineal' => '<path d="M4 16 16 4l4 4L8 20 4 16Z"/><path d="m13 7 4 4M10 10l2 2M7 13l2 2"/>',
@@ -198,6 +219,7 @@ function morshaus_pilot_feature_icon($icon) {
         'schichten' => '<path d="m12 3 8 4-8 4-8-4 8-4Z"/><path d="m4 12 8 4 8-4M4 17l8 4 8-4"/>',
         'funkeln' => '<path d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z"/><path d="m18.5 16 .8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z"/>',
         'thermometer' => '<path d="M10 14.8V5a2 2 0 1 1 4 0v9.8a4.5 4.5 0 1 1-4 0Z"/><path d="M12 8v8"/>',
+        'uhr' => '<circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/>',
         'standort' => '<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
         'kalender' => '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/>',
         'wellen' => '<path d="M3 7c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
@@ -301,6 +323,7 @@ function morshaus_pilot_product_payload($product) {
                 'description' => wpautop(wp_kses_post($model['beschreibung'] ?? '')),
                 'taste' => wpautop(wp_kses_post($model['geschmack'] ?? '')),
                 'preparation' => wpautop(wp_kses_post($preparation)),
+                'infusions' => $is_tea ? morshaus_sanitize_aufguesse($model['aufguesse'] ?? array()) : array(),
                 'knowledge' => wpautop(wp_kses_post($knowledge)),
                 'features' => $features,
                 'images' => $images,
@@ -318,6 +341,10 @@ function morshaus_pilot_product_payload($product) {
     return array(
         'name' => (string) ($product['name'] ?? ''),
         'category' => $is_tea ? 'tee' : 'utensil',
+        'preparationIcons' => array(
+            'temperature' => morshaus_pilot_feature_icon('thermometer'),
+            'duration' => morshaus_pilot_feature_icon('uhr'),
+        ),
         'unavailable' => morshaus_pilot_product_unavailable($product),
         'showThumbnails' => !isset($product['show_thumbnails']) || !empty($product['show_thumbnails']),
         'editions' => $editions,

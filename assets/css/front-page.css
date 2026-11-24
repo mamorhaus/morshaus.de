@@ -192,6 +192,10 @@
 .mh-home-signal__item img{display:block;width:100%;height:auto}
 .mh-home-signal__item p{padding-top:8px}
 
+@media(min-width:1024px){
+    .mh-home-panel__media{left:-20px;width:calc(100% - 20px)}
+}
+
 @media(min-width:821px){
     .mh-home-main:not(.mh-home-main--editable) .mh-home-panel:last-of-type .mh-home-panel__copy,
     .mh-home-main--editable .mh-home-panel--contact .mh-home-panel__copy{

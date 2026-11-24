@@ -29,6 +29,11 @@ Geschmacks- und Zubereitungsangaben stehen in ihren jeweiligen Reitern. Beschrei
 Merkmale stehen bei Tee und Utensilien unter der Beschreibung oberhalb des
 Bestellblocks; Tee hat zusätzlich einen Geschmacksreiter.
 Zubereitung erscheint, wo sie relevant ist.
+Im Produkt-Admin lassen sich für jede Teevariante unter „Aufgüsse“ beliebig
+viele Aufgüsse mit Temperatur und Ziehzeit einschließlich Einheit eintragen
+(z. B. „70 °C“ und „60 Sek.“). Die Reihenfolge entspricht der Anzeige;
+einzelne Angaben dürfen leer bleiben, vollständig leere Zeilen werden entfernt.
+Der Zubereitungstext bleibt zusätzlich sichtbar.
 Die Piktogramme der Produktmerkmale entsprechen der Auswahl in der Verwaltung;
 die Beschreibung wird vollständig angezeigt und nicht automatisch gekürzt.
 Aktivierte Merkmal-Hinweise erscheinen als Tooltip am Info-Symbol. Bilder für
