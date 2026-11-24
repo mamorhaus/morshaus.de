@@ -12,6 +12,7 @@ get_header();
                 <div class="mh-product mh-product--utensil" data-mh-product>
                     <script type="application/json" class="mh-product__data"><?php echo wp_json_encode($payload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?></script>
                     <div class="mh-product__overview">
+                        <div class="mh-product__visual">
                         <div class="mh-product__gallery-column">
                             <button class="mh-product__stage" type="button" aria-label="Produktbilder vergrößern" hidden>
                                 <img class="mh-product__image" alt="">
@@ -32,6 +33,8 @@ get_header();
                                 <div class="mh-product__editions" aria-label="Ausführung wählen"></div>
                             </div>
                         </div>
+                        </div>
+                        <div class="mh-product__content">
                         <div class="mh-product__detail-column">
                             <div class="mh-product__heading">
                                 <p class="mh-product__eyebrow"><?php echo esc_html($product['name']); ?></p>
@@ -46,6 +49,7 @@ get_header();
                                 <div id="mh-panel-description" class="mh-product__panel mh-product__description" role="tabpanel" aria-labelledby="mh-tab-description" tabindex="0"></div>
                                 <div id="mh-panel-preparation" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-preparation" tabindex="0" hidden></div>
                                 <div id="mh-panel-knowledge" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-knowledge" tabindex="0" hidden></div>
+                                <button type="button" class="mh-product__more" hidden>Mehr</button>
                             </section>
                         </div>
                         <section class="mh-product__purchase" aria-label="Bestellung">
@@ -75,6 +79,7 @@ get_header();
                             <p class="mh-product__feedback" role="status" aria-live="polite"></p>
                             <button type="button" class="mh-product__add">Zur Bestellliste hinzufügen</button>
                         </section>
+                        </div>
                     </div>
                     <dialog class="mh-product__dialog" aria-label="Vergrößerte Produktbilder">
                         <div class="mh-product__dialog-frame">

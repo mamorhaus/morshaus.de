@@ -51,6 +51,11 @@ document.addEventListener('DOMContentLoaded', function () {
         var stage = product.querySelector('.mh-product__stage');
         var image = product.querySelector('.mh-product__image');
         var galleryThumbs = product.querySelector('.mh-product__gallery-thumbs');
+        var galleryColumn = product.querySelector('.mh-product__gallery-column');
+        var detailColumn = product.querySelector('.mh-product__detail-column');
+        var moreButton = product.querySelector('.mh-product__more');
+        var previewExpanded = false;
+        var clippedFocusables = new Map();
         var select = product.querySelector('#mh-product-quantity');
         var extras = product.querySelector('.mh-product__extras');
         var extrasList = extras.querySelector('div');
@@ -82,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showFeedback('', false);
         }
         function setTab(name, focus) {
+            previewExpanded = false;
             product.querySelectorAll('[role="tab"]').forEach(function (tab) {
                 var active = tab.id === 'mh-tab-' + name;
                 tab.setAttribute('aria-selected', active ? 'true' : 'false');
@@ -89,6 +95,132 @@ document.addEventListener('DOMContentLoaded', function () {
                 product.querySelector('#' + tab.getAttribute('aria-controls')).hidden = !active;
                 if (active && focus) tab.focus();
             });
+            updatePreview();
+        }
+        function restoreClippedFocusables() {
+            clippedFocusables.forEach(function (tabindex, element) {
+                if (tabindex === null) element.removeAttribute('tabindex');
+                else element.setAttribute('tabindex', tabindex);
+            });
+            clippedFocusables.clear();
+        }
+        function positionMoreAfterText(panel) {
+            var panelRect = panel.getBoundingClientRect();
+            var infoRect = moreButton.parentElement.getBoundingClientRect();
+            var buttonRect = moreButton.getBoundingClientRect();
+            moreButton.style.top = (panelRect.bottom - buttonRect.height - infoRect.top) + 'px';
+            moreButton.style.bottom = 'auto';
+            var walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT);
+            var nodes = [];
+            var node;
+            while ((node = walker.nextNode())) nodes.push(node);
+            var range = document.createRange();
+            for (var i = nodes.length - 1; i >= 0; i--) {
+                node = nodes[i];
+                if (node.parentElement.closest('.mh-product__features, .mh-product__infusions')) continue;
+                var words = Array.from(node.data.matchAll(/\S+/g));
+                for (var j = words.length - 1; j >= 0; j--) {
+                    range.setStart(node, words[j].index);
+                    range.setEnd(node, words[j].index + words[j][0].length);
+                    var rects = range.getClientRects();
+                    if (rects.length !== 1) continue;
+                    var rect = rects[0];
+                    if (!rect.width || rect.top < panelRect.top || rect.bottom > panelRect.bottom + 1 ||
+                        rect.right + 3 + buttonRect.width > panelRect.right) continue;
+                    var left = rect.right + 3;
+                    var lineHeight = parseFloat(window.getComputedStyle(panel).lineHeight);
+                    if (panelRect.bottom - rect.bottom > lineHeight) {
+                        panel.style.setProperty('--mh-panel-limit', (rect.bottom - panelRect.top + (lineHeight - rect.height) / 2) + 'px');
+                    }
+                    moreButton.style.left = (left - infoRect.left) + 'px';
+                    moreButton.style.top = (rect.top + (rect.height - buttonRect.height) / 2 - infoRect.top) + 'px';
+                    moreButton.style.right = 'auto';
+                    moreButton.style.bottom = 'auto';
+                    moreButton.style.setProperty('--mh-more-cover', Math.max(0, panelRect.right - left - buttonRect.width) + 'px');
+                    return;
+                }
+            }
+        }
+        function updatePreview() {
+            restoreClippedFocusables();
+            var tab = product.querySelector('[role="tab"][aria-selected="true"]');
+            var panel = tab && product.querySelector('#' + tab.getAttribute('aria-controls'));
+            if (!panel) return;
+            var description = panel.id === 'mh-panel-description';
+            var preview = description ? panel.querySelector('.mh-product__description-text') : panel;
+            if (!preview) return;
+            var features = description ? panel.querySelector('.mh-product__features') : null;
+            if (description && (moreButton.parentElement !== panel || moreButton.nextElementSibling !== features)) {
+                panel.insertBefore(moreButton, features);
+            } else if (!description && moreButton.parentElement !== product.querySelector('.mh-product__info')) {
+                product.querySelector('.mh-product__info').appendChild(moreButton);
+            }
+            var desktop = window.matchMedia('(min-width: 901px)').matches;
+            var gallery = stage.hidden ? galleryColumn.querySelector('.mh-product__no-image') : stage;
+            var galleryHeight = gallery.getBoundingClientRect().height;
+            product.style.setProperty('--mh-gallery-height', desktop ? galleryHeight + 'px' : '0px');
+            var style = window.getComputedStyle(preview);
+            var lineHeight = parseFloat(style.lineHeight);
+            var padding = parseFloat(style.paddingTop);
+            var featureSpace = features ? features.getBoundingClientRect().height + parseFloat(window.getComputedStyle(features).marginTop) : 0;
+            var available = desktop ? Math.max(padding + lineHeight, galleryHeight - (preview.getBoundingClientRect().top - detailColumn.getBoundingClientRect().top) - featureSpace - 1) : padding + lineHeight * 6;
+            var limit = padding + Math.max(1, Math.floor((available - padding) / lineHeight)) * lineHeight;
+            preview.classList.toggle('is-collapsed', !previewExpanded);
+            var overflowing = preview.scrollHeight > available + 1;
+            var separateButton = false;
+            if (overflowing && !previewExpanded) {
+                var rows = Array.from(preview.querySelectorAll('.mh-product__infusions li'));
+                if (rows.length) {
+                    var panelTop = preview.getBoundingClientRect().top;
+                    var buttonHeight = parseFloat(window.getComputedStyle(moreButton).lineHeight) || lineHeight;
+                    var positions = rows.map(function (row) {
+                        var rect = row.getBoundingClientRect();
+                        return {top: rect.top - panelTop, bottom: rect.bottom - panelTop};
+                    });
+                    var boundaries = positions.map(function (position) { return position.bottom; }).filter(function (bottom) {
+                        return bottom + buttonHeight + 4 <= available && !positions.some(function (position) {
+                            return position.top < bottom - 1 && position.bottom > bottom + 1;
+                        });
+                    });
+                    if (boundaries.length) {
+                        limit = Math.max.apply(null, boundaries);
+                        separateButton = true;
+                    } else {
+                        var firstRowTop = Math.min.apply(null, positions.map(function (position) { return position.top; }));
+                        if (firstRowTop >= padding && firstRowTop + buttonHeight + 4 <= available) {
+                            limit = firstRowTop;
+                            separateButton = true;
+                        }
+                    }
+                }
+            }
+            preview.style.setProperty('--mh-panel-limit', limit + 'px');
+            if (!overflowing) {
+                previewExpanded = false;
+                preview.classList.remove('is-collapsed');
+            }
+            moreButton.hidden = !overflowing;
+            moreButton.classList.toggle('is-overlay', overflowing && !previewExpanded && !separateButton);
+            moreButton.textContent = previewExpanded ? 'Weniger' : '… Mehr';
+            moreButton.setAttribute('aria-expanded', previewExpanded ? 'true' : 'false');
+            moreButton.setAttribute('aria-controls', panel.id);
+            moreButton.style.removeProperty('left');
+            moreButton.style.removeProperty('top');
+            moreButton.style.removeProperty('right');
+            moreButton.style.removeProperty('bottom');
+            moreButton.style.removeProperty('--mh-more-cover');
+            if (moreButton.classList.contains('is-overlay')) positionMoreAfterText(preview);
+            if (overflowing && !previewExpanded) {
+                var bottom = preview.getBoundingClientRect().bottom;
+                var overlay = moreButton.classList.contains('is-overlay') ? moreButton.getBoundingClientRect() : null;
+                preview.querySelectorAll('a[href],button,input,select,textarea,iframe,audio[controls],video[controls],[contenteditable="true"],[tabindex]').forEach(function (element) {
+                    var rect = element.getBoundingClientRect();
+                    if (rect.bottom > bottom + 1 || (overlay && rect.bottom > overlay.top && rect.top < overlay.bottom && rect.right > overlay.left)) {
+                        clippedFocusables.set(element, element.getAttribute('tabindex'));
+                        element.setAttribute('tabindex', '-1');
+                    }
+                });
+            }
         }
         function renderFeatures(features) {
             var section = document.createElement('section');
@@ -370,6 +502,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         function render(modelMovement) {
+            restoreClippedFocusables();
+            previewExpanded = false;
             var current = model();
             if (!current) throw new Error('Für diese Ausführung ist keine Variante hinterlegt.');
             quantityIndex = current.quantities.findIndex(function (item) { return !item.unavailable; });
@@ -380,7 +514,10 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedExtraOrder = [];
             product.querySelector('.mh-product__title').textContent = current.name;
             var description = product.querySelector('#mh-panel-description');
-            description.innerHTML = current.description + (isTea ? '' : current.taste);
+            var descriptionText = document.createElement('div');
+            descriptionText.className = 'mh-product__description-text';
+            descriptionText.innerHTML = current.description + (isTea ? '' : current.taste);
+            description.replaceChildren(descriptionText);
             var knowledge = document.createElement('div');
             knowledge.innerHTML = current.knowledge;
             if (isTea) {
@@ -494,6 +631,7 @@ document.addEventListener('DOMContentLoaded', function () {
             renderExtras();
             renderGallery();
             updatePurchase();
+            updatePreview();
         }
         function renderDialog() {
             var images = galleryImages();
@@ -615,6 +753,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 setTab(next.id.replace('mh-tab-', ''), true);
             });
         });
+        moreButton.addEventListener('click', function () {
+            previewExpanded = !previewExpanded;
+            updatePreview();
+        });
+        if (window.ResizeObserver) {
+            var previewObserver = new ResizeObserver(updatePreview);
+            previewObserver.observe(galleryColumn);
+            product.querySelectorAll('.mh-product__panel').forEach(function (panel) {
+                previewObserver.observe(panel);
+            });
+        }
         stage.addEventListener('click', function () {
             if (!galleryImages().length) return;
             renderDialog();
@@ -642,7 +791,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         window.addEventListener('resize', function () {
             if (dialog.open) positionDialogBrand();
+            updatePreview();
         });
+        if (document.fonts) document.fonts.ready.then(updatePreview);
         dialogViewport.addEventListener('pointermove', function (event) {
             if (event.pointerType !== 'mouse') return;
             positionDialogLens(event.clientX, event.clientY);

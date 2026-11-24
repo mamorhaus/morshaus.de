@@ -11,6 +11,7 @@
                     <div class="mh-product" data-mh-product>
                         <script type="application/json" class="mh-product__data"><?php echo wp_json_encode(morshaus_pilot_product_payload($product), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?></script>
                         <div class="mh-product__overview">
+                            <div class="mh-product__visual">
                             <div class="mh-product__gallery-column">
                                 <button class="mh-product__stage" type="button" aria-label="Produktbilder vergrößern" hidden>
                                     <img class="mh-product__image" alt="">
@@ -31,9 +32,11 @@
                                     <div class="mh-product__editions" aria-label="Ausführung wählen"></div>
                                 </div>
                             </div>
+                            </div>
+                            <div class="mh-product__content">
                             <div class="mh-product__detail-column">
                                 <div class="mh-product__heading">
-                                    <p class="mh-product__eyebrow">Grüner Tee</p>
+                                    <p class="mh-product__eyebrow"><?php echo esc_html($product['name']); ?></p>
                                     <h1 class="mh-product__title"><?php echo esc_html($product['name']); ?></h1>
                                 </div>
                                 <section class="mh-product__info" aria-label="Teeinformationen">
@@ -47,6 +50,7 @@
                                     <div id="mh-panel-taste" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-taste" tabindex="0" hidden></div>
                                     <div id="mh-panel-preparation" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-preparation" tabindex="0" hidden></div>
                                     <div id="mh-panel-knowledge" class="mh-product__panel" role="tabpanel" aria-labelledby="mh-tab-knowledge" tabindex="0" hidden></div>
+                                    <button type="button" class="mh-product__more" hidden>Mehr</button>
                                 </section>
                             </div>
                             <section class="mh-product__purchase" aria-label="Bestellung">
@@ -76,6 +80,7 @@
                                 <p class="mh-product__feedback" role="status" aria-live="polite"></p>
                                 <button type="button" class="mh-product__add">Zur Bestellliste hinzufügen</button>
                             </section>
+                            </div>
                         </div>
                         <dialog class="mh-product__dialog" aria-label="Vergrößerte Produktbilder">
                             <div class="mh-product__dialog-frame">

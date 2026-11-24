@@ -38,8 +38,10 @@ einzelne Angaben dürfen leer bleiben, vollständig leere Zeilen werden entfernt
 Ältere Angaben mit Bereichen oder Text bleiben erhalten und können durch
 Zahlen ersetzt werden; einfache Angaben mit Einheit werden übernommen.
 Alte Zubereitungstexte bleiben gespeichert, werden bei Tee aber nicht angezeigt.
-Die Piktogramme der Produktmerkmale entsprechen der Auswahl in der Verwaltung;
-die Beschreibung wird vollständig angezeigt und nicht automatisch gekürzt.
+Die Piktogramme der Produktmerkmale entsprechen der Auswahl in der Verwaltung.
+Lange Reiterinhalte können über „Mehr“ geöffnet und mit „Weniger“ wieder
+eingeklappt werden; auf Mobilgeräten umfasst die Vorschau etwa sechs Zeilen.
+Produktmerkmale bleiben in der Beschreibung auch eingeklappt sichtbar.
 Aktivierte Merkmal-Hinweise erscheinen als Tooltip am Info-Symbol. Bilder für
 Dose, Klammer und Brandstempel lassen sich je Variante in der Produktverwaltung
 unter „Extras“ auswählen; beim Anklicken erscheint das Bild in der Galerie,
