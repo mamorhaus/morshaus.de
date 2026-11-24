@@ -1,0 +1,10 @@
+.mh-prose .mh-recommendation{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,56px);align-items:start}
+.mh-recommendation .wp-block-column{min-width:0}
+.mh-recommendation .wp-block-image{margin:0}
+.mh-recommendation .wp-block-image img{display:block;width:100%;aspect-ratio:1;object-fit:contain;border-radius:var(--mh-radius-lg);background:#fff}
+.mh-recommendation__eyebrow{margin:0 0 8px!important;color:#62735c;font-size:12px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.mh-prose .mh-recommendation h2{margin:0 0 20px;font-family:var(--mh-font-display);font-size:clamp(36px,4vw,48px);font-weight:600;line-height:1.08}
+.mh-prose .mh-recommendation h3{margin:28px 0 12px;font-size:22px}
+.mh-recommendation ul{padding-left:20px;line-height:1.7}
+.mh-recommendation__source{font-size:13px}
+@media(max-width:782px){.mh-prose .mh-recommendation{grid-template-columns:1fr;gap:24px}}

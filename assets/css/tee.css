@@ -8,21 +8,22 @@
 
 .mh-prose .mh-tee-track{display:flex;flex-flow:row nowrap;justify-content:flex-start!important;width:100%;min-width:0;margin:0!important;padding:0;gap:12px}
 .mh-prose .is-expanded .mh-tee-track{flex-wrap:wrap}
-.mh-tee-track>.wp-block-cover{position:relative;flex:0 0 300px;width:300px;max-width:100%;height:300px;min-height:300px;max-height:300px;margin:0;overflow:hidden;border:3px solid #f5f0e7;border-radius:18px;background:#81776a;box-shadow:0 0 0 1px #756d62;transition:transform .18s ease,box-shadow .18s ease}
+.mh-tee-track>.wp-block-cover{position:relative;flex:0 0 300px;width:300px;max-width:100%;height:300px;min-height:300px!important;max-height:300px;margin:0;overflow:hidden;border:3px solid #f5f0e7;border-radius:18px;background:#81776a;box-shadow:0 0 0 1px #756d62;transition:transform .18s ease,box-shadow .18s ease}
 .mh-tee-track>.wp-block-cover[hidden]{display:none!important}
 .mh-tee-track>.wp-block-cover:hover,.mh-tee-track>.wp-block-cover:focus-within{z-index:1;transform:translateY(-2px);box-shadow:0 4px 12px rgba(37,42,35,.18),0 0 0 1px #756d62}
 .mh-tee-track .wp-block-cover__image-background{width:100%;height:100%;object-fit:cover;object-position:center}
 .mh-tee-track .wp-block-cover__background{opacity:0!important}
 .mh-tee-track>.wp-block-cover .mh-tee-unavailable{position:absolute;z-index:2;top:8px;right:0;padding:4px 10px;border-radius:4px 0 0 4px;background:#c90000;color:#fff;font-family:var(--mh-font-body);font-size:10px;font-weight:800;line-height:1.2;text-transform:uppercase;pointer-events:none}
+.mh-tee-track>.wp-block-cover .mh-utensil-recommendation{position:absolute;z-index:2;top:8px;right:0;padding:4px 10px;border-radius:4px 0 0 4px;background:#52684c;color:#fff;font-family:var(--mh-font-body);font-size:10px;font-weight:800;line-height:1.2;text-transform:uppercase;pointer-events:none}
 .mh-tee-track .wp-block-cover__inner-container{position:absolute;z-index:1;right:12px;bottom:18px;left:12px;width:auto;max-width:none;margin:0;text-align:center}
 .mh-prose .mh-tee-track .wp-block-button__link{display:block;min-height:0;padding:0;border:0;border-radius:0;background:transparent;color:#fff!important;font-size:18px;font-weight:500;line-height:1.3;text-decoration:none!important;text-shadow:0 1px 4px rgba(0,0,0,.8)}
 .mh-prose .mh-tee-track .wp-block-button__link::before{display:none;content:none}
 .mh-tee-track>.mh-tee-card--sencha .wp-block-cover__inner-container{inset:0;display:flex;align-items:flex-end;justify-content:center;padding:0 12px 18px}
 .mh-prose .mh-tee-card--sencha .wp-block-button__link{position:static}
 .mh-prose .mh-tee-card--sencha .wp-block-button__link::after{position:absolute;inset:0;content:""}
-.mh-utensilien-page .mh-tee-track .wp-block-cover__inner-container{inset:0;display:flex;align-items:flex-end;justify-content:center;padding:0 12px 18px}
-.mh-utensilien-page .mh-prose .mh-tee-track .wp-block-button__link{position:static}
-.mh-utensilien-page .mh-tee-track .wp-block-button__link[href]::after{position:absolute;inset:0;content:""}
+.mh-tee-page .mh-tee-track .wp-block-cover__inner-container,.mh-utensilien-page .mh-tee-track .wp-block-cover__inner-container{inset:0;display:flex;align-items:flex-end;justify-content:center;padding:0 12px 18px}
+.mh-tee-page .mh-prose .mh-tee-track .wp-block-button__link,.mh-utensilien-page .mh-prose .mh-tee-track .wp-block-button__link{position:static}
+.mh-tee-page .mh-tee-track .wp-block-button__link[href]::after,.mh-utensilien-page .mh-tee-track .wp-block-button__link[href]::after{position:absolute;inset:0;content:""}
 .mh-utensilien-page .mh-tee-track .wp-block-button__link[aria-disabled="true"]{cursor:default}
 .mh-utensil-coming-soon{display:block;flex-basis:100%;margin-top:3px;color:#fff;font-size:12px;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.8)}
 
@@ -38,11 +39,12 @@
     .mh-prose>.mh-tee-carousel{width:100%}
     .mh-prose .mh-tee-track{--mh-card-size:clamp(130px,calc(50vw - 54px),155px);gap:10px;padding:4px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:4px;scrollbar-width:none}
     .mh-prose .mh-tee-track::-webkit-scrollbar{display:none}
-    .mh-tee-track>.wp-block-cover{flex-basis:var(--mh-card-size);width:var(--mh-card-size);height:var(--mh-card-size);min-height:var(--mh-card-size);max-height:var(--mh-card-size);border-width:1px;scroll-snap-align:start}
+    .mh-tee-track>.wp-block-cover{flex-basis:var(--mh-card-size);width:var(--mh-card-size);height:var(--mh-card-size);min-height:var(--mh-card-size)!important;max-height:var(--mh-card-size);border-width:1px;scroll-snap-align:start}
     .mh-tee-track>.wp-block-cover:hover,.mh-tee-track>.wp-block-cover:focus-within{transform:none;box-shadow:0 0 0 1px #756d62}
     .mh-tee-track>.wp-block-cover:focus-within{outline:2px solid #52684c;outline-offset:1px}
     .mh-prose .mh-tee-track .wp-block-button__link{font-size:14px}
     .mh-tee-track .wp-block-cover__inner-container{right:8px;bottom:10px;left:8px}
     .mh-tee-track>.mh-tee-card--sencha .wp-block-cover__inner-container,
+    .mh-tee-page .mh-tee-track .wp-block-cover__inner-container,
     .mh-utensilien-page .mh-tee-track .wp-block-cover__inner-container{padding:0 8px 10px}
 }

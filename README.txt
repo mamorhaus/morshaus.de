@@ -22,7 +22,9 @@ Bestelllisten-Button und blendet sich nach drei Sekunden aus.
 
 Produkte: Die Sencha-Seite nutzt die vorhandenen Produktdaten und Medien aus
 WordPress. Unter „Produkte“ können Ausführungen, Modelle, Mengen, Preise,
-Extras und Texte bearbeitet werden. Ältere Tee-Ausführungen „Einfach“ und
+Extras und Texte bearbeitet werden. Die Produktübersicht zeigt Varianten nach
+Ausführung ohne Mengen und Preise. Im Tee-Editor stehen Geschmack und
+zusätzlicher Reiter nebeneinander. Ältere Tee-Ausführungen „Einfach“ und
 „Besonders“ werden als „Alltag“ und „Erlesen“ angezeigt. Ältere Zubereitungen
 im Feld „Wissenswertes“ bleiben gespeichert. Beschreibung und
 Merkmale stehen bei Tee und Utensilien unter der Beschreibung oberhalb des
@@ -54,8 +56,14 @@ Bei weniger Varianten wird das ausgewählte Thumbnail größer dargestellt.
 Varianten können angeklickt sowie per Wischgeste oder Pfeiltasten gewählt werden.
 Utensilien mit dem Shortcode [morshaus_produkt id="..."] erhalten die gemeinsame
 Produktansicht mit Stückpreis und den im Produkt aktivierten Brandstempeln.
+Teekarten verlinken auf die gleichnamigen Produkte: Sencha nutzt die vorhandene
+Sencha-Seite, weitere Tees eine veröffentlichte Unterseite von „Tee“ mit der
+Produkt-ID als Titelform und dem Shortcode [morshaus_produkt id="..."].
+Die Verfügbarkeit der Teekarte gilt auch auf ihrer Produktseite.
 Die Karten im Utensilienverteiler sind den vorhandenen Produktseiten zugeordnet;
 für noch nicht angelegte Produkte steht dort „Produktseite folgt“.
+Waage und Isolierkanne führen zu bearbeitbaren Empfehlungsseiten ohne Bestellung
+und tragen auf dem Verteiler ein grünes Empfehlungsbanner.
 Mobil lassen sich die Karten jeder Tee- und Utensilienkategorie seitlich wischen;
 auf Desktop bleiben die Kategorien aufklappbar.
 

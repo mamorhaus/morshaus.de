@@ -60,7 +60,8 @@ function morshaus_pilot_unavailable_cards($path, $label_block) {
 function morshaus_pilot_product_unavailable($product) {
     $id = $product['id'] ?? '';
     if (($product['kategorie'] ?? '') === 'tee') {
-        return $id === 'sencha' && in_array('sencha', morshaus_pilot_unavailable_cards('tee', 'core/button'), true);
+        $name = sanitize_title($product['name'] ?? '');
+        return $name !== '' && in_array($name, morshaus_pilot_unavailable_cards('tee', 'core/button'), true);
     }
     $cards = array(
         'loeffel' => 'Löffel',
@@ -89,13 +90,8 @@ function morshaus_pilot_seminar_unavailable($filter) {
     return in_array($cards[$filter], morshaus_pilot_unavailable_cards('seminare', 'core/heading'), true);
 }
 
-function morshaus_pilot_current_utensil_product() {
+function morshaus_pilot_current_shortcode_product($category) {
     if (!is_page()) return null;
-    $legacy_page = get_page_by_path('utensilien-teaser/untersetzer-tasse');
-    if ($legacy_page && (int) $legacy_page->ID === (int) get_queried_object_id()) {
-        $product = morshaus_get_produkt_by_id('untersetzer');
-        return $product && ($product['kategorie'] ?? '') === 'utensil' ? $product : null;
-    }
     $content = get_post_field('post_content', get_queried_object_id());
     if (!is_string($content) || strpos($content, '[morshaus_produkt') === false) return null;
     if (!preg_match_all('/' . get_shortcode_regex(array('morshaus_produkt')) . '/s', $content, $matches, PREG_SET_ORDER)) return null;
@@ -103,18 +99,68 @@ function morshaus_pilot_current_utensil_product() {
         if ($match[1] === '[' && $match[6] === ']') continue;
         $atts = shortcode_parse_atts($match[3]);
         $product = morshaus_get_produkt_by_id(sanitize_text_field($atts['id'] ?? ''));
-        if ($product && ($product['kategorie'] ?? '') === 'utensil') return $product;
+        if ($product && ($product['kategorie'] ?? '') === $category) return $product;
     }
     return null;
+}
+
+function morshaus_pilot_current_tea_product() {
+    if (is_page('sencha')) {
+        $product = morshaus_get_produkt_by_id('sencha');
+        return $product && ($product['kategorie'] ?? '') === 'tee' ? $product : null;
+    }
+    return morshaus_pilot_current_shortcode_product('tee');
+}
+
+function morshaus_pilot_current_utensil_product() {
+    if (!is_page()) return null;
+    $legacy_page = get_page_by_path('utensilien-teaser/untersetzer-tasse');
+    if ($legacy_page && (int) $legacy_page->ID === (int) get_queried_object_id()) {
+        $product = morshaus_get_produkt_by_id('untersetzer');
+        return $product && ($product['kategorie'] ?? '') === 'utensil' ? $product : null;
+    }
+    return morshaus_pilot_current_shortcode_product('utensil');
 }
 
 function morshaus_pilot_utensil_template($template) {
     if (morshaus_pilot_current_utensil_product()) {
         return get_template_directory() . '/page-product-utensil.php';
     }
+    if (morshaus_pilot_current_tea_product()) {
+        return get_template_directory() . '/page-sencha.php';
+    }
     return $template;
 }
 add_filter('template_include', 'morshaus_pilot_utensil_template');
+
+function morshaus_pilot_tea_card_links($content, $block) {
+    if (is_admin() || !is_page('tee') || ($block['blockName'] ?? '') !== 'core/button') return $content;
+    $label = trim(wp_strip_all_tags($content));
+    $processor = new WP_HTML_Tag_Processor($content);
+    if (!$processor->next_tag('a')) return $content;
+    foreach (morshaus_get_produkte() as $product) {
+        if (($product['kategorie'] ?? '') !== 'tee' || ($product['name'] ?? '') !== $label) continue;
+        $id = $product['id'] ?? '';
+        $page = $id === 'sencha' ? get_page_by_path('sencha') : get_page_by_path('tee/' . $id);
+        if ($page && $page->post_status === 'publish') {
+            $processor->set_attribute('href', get_permalink($page));
+        } else {
+            error_log('Morshaus: Produktseite fehlt für Teekarte ' . $label);
+            $processor->remove_attribute('href');
+            $processor->set_attribute('aria-disabled', 'true');
+        }
+        return $processor->get_updated_html();
+    }
+    $path = wp_parse_url((string) $processor->get_attribute('href'), PHP_URL_PATH);
+    if (is_string($path) && strtolower(trim($path, '/')) === 'sencha') {
+        error_log('Morshaus: Produkt fehlt für Teekarte ' . $label);
+        $processor->remove_attribute('href');
+        $processor->set_attribute('aria-disabled', 'true');
+        return $processor->get_updated_html();
+    }
+    return $content;
+}
+add_filter('render_block', 'morshaus_pilot_tea_card_links', 10, 2);
 
 function morshaus_pilot_utensil_card_links($content, $block) {
     if (is_admin() || !is_page('utensilien') || ($block['blockName'] ?? '') !== 'core/button') return $content;
@@ -127,8 +173,10 @@ function morshaus_pilot_utensil_card_links($content, $block) {
         'Tasse/Kanne' => array('utensilien-teaser/untersetzer-tasse', 'untersetzer'),
         'Tablett' => array('utensilien-teaser/tablett', 'tablett'),
         'Dosen' => array('utensilien-teaser/dose', 'dose'),
+        'Waage' => array('utensilien-teaser/waage', null),
+        'Isolierkanne' => array('utensilien-teaser/isolierkanne', null),
     );
-    $pending = array('Regal', 'Tee To-Go', 'Gong Fu', 'To-Go', 'Fairness', 'Waage', 'Isolierkanne');
+    $pending = array('Regal', 'Tee To-Go', 'Gong Fu', 'To-Go', 'Fairness');
     if (!isset($targets[$label]) && !in_array($label, $pending, true)) return $content;
     $processor = new WP_HTML_Tag_Processor($content);
     if (!$processor->next_tag('a')) return $content;
@@ -137,7 +185,9 @@ function morshaus_pilot_utensil_card_links($content, $block) {
         $page = get_page_by_path($path);
         if ($page && $page->post_status === 'publish' && (!$id || morshaus_get_produkt_by_id($id))) {
             $processor->set_attribute('href', get_permalink($page));
-            return $processor->get_updated_html();
+            $content = $processor->get_updated_html();
+            if (!$id) $content .= '<span class="mh-utensil-recommendation">Empfehlung</span>';
+            return $content;
         }
         error_log('Morshaus: Produktseite oder Produkt fehlt für Verteilerkarte ' . $label);
     }

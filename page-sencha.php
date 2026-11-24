@@ -2,7 +2,7 @@
 <main id="main" class="mh-main mh-product-main">
     <div class="mh-container mh-container--wide">
         <?php while (have_posts()) : the_post(); ?>
-            <?php $product = morshaus_get_produkt_by_id('sencha'); ?>
+            <?php $product = morshaus_pilot_current_tea_product(); ?>
             <article <?php post_class('mh-product-page'); ?>>
                 <?php if (!$product) : ?>
                     <h1><?php the_title(); ?></h1>

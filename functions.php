@@ -153,6 +153,17 @@ function morshaus_pilot_assets() {
         );
     }
 
+    if (is_page(array('waage', 'isolierkanne')) &&
+        get_post_field('post_name', wp_get_post_parent_id(get_queried_object_id())) === 'utensilien-teaser') {
+        $path = $dir . '/assets/css/recommendation.css';
+        wp_enqueue_style(
+            'morshaus-recommendation',
+            $uri . '/assets/css/recommendation.css',
+            array('morshaus-base'),
+            file_exists($path) ? filemtime($path) : MORSHAUS_PILOT_VERSION
+        );
+    }
+
     if (is_page('bestellliste')) {
         $path = $dir . '/assets/css/order-list.css';
 
@@ -178,7 +189,7 @@ function morshaus_pilot_assets() {
         );
     }
 
-    if (is_page('sencha') || morshaus_pilot_current_utensil_product()) {
+    if (is_page('sencha') || morshaus_pilot_current_tea_product() || morshaus_pilot_current_utensil_product()) {
         $path = $dir . '/assets/css/product.css';
         wp_enqueue_style(
             'morshaus-product',
@@ -783,7 +794,7 @@ function morshaus_pilot_menu_item_classes($classes, $item, $args) {
     if (
         isset($args->theme_location) &&
         $args->theme_location === 'primary' &&
-        is_page('sencha')
+        (is_page('sencha') || morshaus_pilot_current_tea_product())
     ) {
         $tee_page = get_page_by_path('tee');
         if ($tee_page && isset($item->object_id, $item->object) && $item->object === 'page' && (int) $item->object_id === $tee_page->ID) {
@@ -816,7 +827,7 @@ add_filter(
 );
 
 function morshaus_pilot_product_page_menu_classes($classes, $page) {
-    if (is_page('sencha') && $page->post_name === 'tee') {
+    if ((is_page('sencha') || morshaus_pilot_current_tea_product()) && $page->post_name === 'tee') {
         $classes[] = 'current-menu-ancestor';
     }
     if (morshaus_pilot_current_utensil_product() && get_page_uri($page) === 'utensilien-teaser/utensilien') {
