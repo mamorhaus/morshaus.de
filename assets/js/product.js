@@ -488,15 +488,21 @@ document.addEventListener('DOMContentLoaded', function () {
             updateGalleryImage();
             renderDialog();
         }
-        function positionDialogLens(clientX, clientY) {
+        function positionDialogLens(clientX, clientY, touch) {
             var rect = dialogViewport.getBoundingClientRect();
-            var x = clientX - rect.left;
-            var y = clientY - rect.top;
-            var lensCenter = dialogLens.clientWidth / 2;
+            var imageRect = touch ? dialog.querySelector('.mh-product__dialog-image').getBoundingClientRect() : rect;
+            var x = clientX - imageRect.left;
+            var y = clientY - imageRect.top;
+            dialogViewport.classList.toggle('is-touch-zooming', Boolean(touch));
             dialogLens.classList.add('is-active');
-            dialogLens.style.left = x + 'px';
-            dialogLens.style.top = y + 'px';
-            dialogLens.style.backgroundSize = (rect.width * 2) + 'px ' + (rect.height * 2) + 'px';
+            var lensCenter = dialogLens.clientWidth / 2;
+            var halfWidth = dialogLens.offsetWidth / 2;
+            var halfHeight = dialogLens.offsetHeight / 2;
+            var lensX = touch ? Math.max(halfWidth, Math.min(window.innerWidth - halfWidth, clientX)) : clientX;
+            var lensY = touch ? Math.max(halfHeight, clientY - halfHeight - 16) : clientY;
+            dialogLens.style.left = (lensX - rect.left) + 'px';
+            dialogLens.style.top = (lensY - rect.top) + 'px';
+            dialogLens.style.backgroundSize = (imageRect.width * 2) + 'px ' + (imageRect.height * 2) + 'px';
             dialogLens.style.backgroundPosition = (lensCenter - x * 2) + 'px ' + (lensCenter - y * 2) + 'px';
         }
         function positionDialogBrand() {
@@ -591,6 +597,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogTouchStart = null;
             dialogTouchZoomed = false;
             dialogLens.classList.remove('is-active');
+            dialogViewport.classList.remove('is-touch-zooming');
             if (scrollBeforeDialog) {
                 window.scrollTo({left: scrollBeforeDialog.x, top: scrollBeforeDialog.y, behavior: 'instant'});
                 scrollBeforeDialog = null;
@@ -603,7 +610,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (event.pointerType !== 'mouse') return;
             positionDialogLens(event.clientX, event.clientY);
         });
-        dialogViewport.addEventListener('pointerleave', function () { dialogLens.classList.remove('is-active'); });
+        dialogViewport.addEventListener('pointerleave', function (event) {
+            if (event.pointerType === 'mouse') dialogLens.classList.remove('is-active');
+        });
         dialogViewport.addEventListener('contextmenu', function (event) {
             if (dialogTouchStart || event.pointerType === 'touch' || window.matchMedia('(pointer: coarse)').matches) {
                 event.preventDefault();
@@ -613,6 +622,8 @@ document.addEventListener('DOMContentLoaded', function () {
             window.clearTimeout(dialogTouchTimer);
             dialogTouchTimer = null;
             dialogTouchZoomed = false;
+            dialogLens.classList.remove('is-active');
+            dialogViewport.classList.remove('is-touch-zooming');
             if (event.touches.length !== 1) {
                 dialogTouchStart = null;
                 return;
@@ -621,14 +632,14 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogTouchTimer = window.setTimeout(function () {
                 if (!dialogTouchStart) return;
                 dialogTouchZoomed = true;
-                positionDialogLens(dialogTouchStart.x, dialogTouchStart.y);
+                positionDialogLens(dialogTouchStart.x, dialogTouchStart.y, true);
             }, 450);
         }, {passive: true});
         dialogViewport.addEventListener('touchmove', function (event) {
             if (!dialogTouchStart || event.touches.length !== 1) return;
             var touch = event.touches[0];
             if (dialogTouchZoomed) {
-                positionDialogLens(touch.clientX, touch.clientY);
+                positionDialogLens(touch.clientX, touch.clientY, true);
             } else if (Math.abs(touch.clientX - dialogTouchStart.x) > 12 || Math.abs(touch.clientY - dialogTouchStart.y) > 12) {
                 window.clearTimeout(dialogTouchTimer);
                 dialogTouchTimer = null;
@@ -644,6 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var wasZoomed = dialogTouchZoomed;
             dialogTouchZoomed = false;
             dialogLens.classList.remove('is-active');
+            dialogViewport.classList.remove('is-touch-zooming');
             if (wasZoomed) return;
             if (Math.abs(dx) < 45 || Math.abs(dx) <= Math.abs(dy)) return;
             navigateDialog(dx < 0 ? 1 : -1);
@@ -654,6 +666,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogTouchStart = null;
             dialogTouchZoomed = false;
             dialogLens.classList.remove('is-active');
+            dialogViewport.classList.remove('is-touch-zooming');
         });
         dialog.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
