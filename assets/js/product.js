@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var modelAnimationFrame = null;
         var modelAnimationTimer = null;
         var modelTouchStart = null;
+        var dialogTouchStart = null;
+        var dialogTouchTimer = null;
+        var dialogTouchZoomed = false;
         var stage = product.querySelector('.mh-product__stage');
         var image = product.querySelector('.mh-product__image');
         var galleryThumbs = product.querySelector('.mh-product__gallery-thumbs');
@@ -55,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var dialog = product.querySelector('.mh-product__dialog');
         var dialogViewport = dialog.querySelector('.mh-product__dialog-viewport');
         var dialogLens = dialog.querySelector('.mh-product__dialog-lens');
+        var dialogThumbs = dialog.querySelector('.mh-product__dialog-thumbs');
 
         function edition() { return data.editions[editionIndex]; }
         function model() { return edition().models[modelIndex]; }
@@ -454,6 +458,38 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogLens.style.backgroundImage = 'url(' + JSON.stringify(current.full) + ')';
             dialog.querySelector('[data-action="previous"]').hidden = images.length < 2;
             dialog.querySelector('[data-action="next"]').hidden = images.length < 2;
+            dialogThumbs.replaceChildren();
+            dialogThumbs.hidden = images.length < 2;
+            images.forEach(function (photo, index) {
+                var button = document.createElement('button');
+                var thumbnail = document.createElement('img');
+                button.type = 'button';
+                button.dataset.index = String(index);
+                button.setAttribute('aria-label', 'Produktbild ' + (index + 1) + ' von ' + images.length + ' anzeigen');
+                button.setAttribute('aria-pressed', index === imageIndex ? 'true' : 'false');
+                thumbnail.src = photo.thumb || photo.full;
+                thumbnail.alt = '';
+                button.appendChild(thumbnail);
+                dialogThumbs.appendChild(button);
+            });
+        }
+        function navigateDialog(step) {
+            var images = galleryImages();
+            if (images.length < 2) return;
+            imageIndex = (imageIndex + step + images.length) % images.length;
+            updateGalleryImage();
+            renderDialog();
+        }
+        function positionDialogLens(clientX, clientY) {
+            var rect = dialogViewport.getBoundingClientRect();
+            var x = clientX - rect.left;
+            var y = clientY - rect.top;
+            var lensCenter = dialogLens.clientWidth / 2;
+            dialogLens.classList.add('is-active');
+            dialogLens.style.left = x + 'px';
+            dialogLens.style.top = y + 'px';
+            dialogLens.style.backgroundSize = (rect.width * 2) + 'px ' + (rect.height * 2) + 'px';
+            dialogLens.style.backgroundPosition = (lensCenter - x * 2) + 'px ' + (lensCenter - y * 2) + 'px';
         }
 
         modelsContainer.addEventListener('keydown', function (event) {
@@ -520,17 +556,55 @@ document.addEventListener('DOMContentLoaded', function () {
         dialog.querySelector('[data-action="close"]').addEventListener('click', function () { dialog.close(); });
         dialogViewport.addEventListener('pointermove', function (event) {
             if (event.pointerType !== 'mouse') return;
-            var rect = dialogViewport.getBoundingClientRect();
-            var x = event.clientX - rect.left;
-            var y = event.clientY - rect.top;
-            dialogLens.classList.add('is-active');
-            var lensCenter = dialogLens.clientWidth / 2;
-            dialogLens.style.left = x + 'px';
-            dialogLens.style.top = y + 'px';
-            dialogLens.style.backgroundSize = (rect.width * 2) + 'px ' + (rect.height * 2) + 'px';
-            dialogLens.style.backgroundPosition = (lensCenter - x * 2) + 'px ' + (lensCenter - y * 2) + 'px';
+            positionDialogLens(event.clientX, event.clientY);
         });
         dialogViewport.addEventListener('pointerleave', function () { dialogLens.classList.remove('is-active'); });
+        dialogViewport.addEventListener('touchstart', function (event) {
+            window.clearTimeout(dialogTouchTimer);
+            dialogTouchTimer = null;
+            dialogTouchZoomed = false;
+            if (event.touches.length !== 1) {
+                dialogTouchStart = null;
+                return;
+            }
+            dialogTouchStart = {x: event.touches[0].clientX, y: event.touches[0].clientY};
+            dialogTouchTimer = window.setTimeout(function () {
+                if (!dialogTouchStart) return;
+                dialogTouchZoomed = true;
+                positionDialogLens(dialogTouchStart.x, dialogTouchStart.y);
+            }, 450);
+        }, {passive: true});
+        dialogViewport.addEventListener('touchmove', function (event) {
+            if (!dialogTouchStart || event.touches.length !== 1) return;
+            var touch = event.touches[0];
+            if (dialogTouchZoomed) {
+                positionDialogLens(touch.clientX, touch.clientY);
+            } else if (Math.abs(touch.clientX - dialogTouchStart.x) > 12 || Math.abs(touch.clientY - dialogTouchStart.y) > 12) {
+                window.clearTimeout(dialogTouchTimer);
+                dialogTouchTimer = null;
+            }
+        }, {passive: true});
+        dialogViewport.addEventListener('touchend', function (event) {
+            if (!dialogTouchStart || !event.changedTouches.length) return;
+            window.clearTimeout(dialogTouchTimer);
+            dialogTouchTimer = null;
+            var dx = event.changedTouches[0].clientX - dialogTouchStart.x;
+            var dy = event.changedTouches[0].clientY - dialogTouchStart.y;
+            dialogTouchStart = null;
+            var wasZoomed = dialogTouchZoomed;
+            dialogTouchZoomed = false;
+            dialogLens.classList.remove('is-active');
+            if (wasZoomed) return;
+            if (Math.abs(dx) < 45 || Math.abs(dx) <= Math.abs(dy)) return;
+            navigateDialog(dx < 0 ? 1 : -1);
+        }, {passive: true});
+        dialogViewport.addEventListener('touchcancel', function () {
+            window.clearTimeout(dialogTouchTimer);
+            dialogTouchTimer = null;
+            dialogTouchStart = null;
+            dialogTouchZoomed = false;
+            dialogLens.classList.remove('is-active');
+        });
         dialog.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 event.preventDefault();
@@ -538,14 +612,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
         dialog.querySelector('[data-action="previous"]').addEventListener('click', function () {
-            var images = galleryImages();
-            imageIndex = (imageIndex - 1 + images.length) % images.length;
-            updateGalleryImage();
-            renderDialog();
+            navigateDialog(-1);
         });
         dialog.querySelector('[data-action="next"]').addEventListener('click', function () {
-            var images = galleryImages();
-            imageIndex = (imageIndex + 1) % images.length;
+            navigateDialog(1);
+        });
+        dialogThumbs.addEventListener('click', function (event) {
+            var button = event.target.closest('button[data-index]');
+            if (!button || !dialogThumbs.contains(button)) return;
+            imageIndex = Number(button.dataset.index);
             updateGalleryImage();
             renderDialog();
         });
