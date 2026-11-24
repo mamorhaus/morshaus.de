@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
             previous: previous,
             next: next,
             dots: dots,
-            position: position
+            position: position,
+            targetIndex: null
         };
         menus.push(menu);
 
@@ -88,6 +89,15 @@ document.addEventListener('DOMContentLoaded', function () {
         track.addEventListener('scroll', function () {
             updateMenu(menu);
         });
+        track.addEventListener('scrollend', function () {
+            menu.targetIndex = null;
+            updateMenu(menu);
+        });
+        ['pointerdown', 'wheel', 'keydown'].forEach(function (event) {
+            track.addEventListener(event, function () {
+                menu.targetIndex = null;
+            });
+        });
     });
 
     function move(menu, direction) {
@@ -97,8 +107,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!firstCard) return;
         var gap = parseFloat(window.getComputedStyle(menu.track).columnGap) || 0;
         var step = firstCard.getBoundingClientRect().width + gap;
-        var index = Math.round(menu.track.scrollLeft / step);
-        menu.track.scrollLeft = (index + direction) * step;
+        var index = menu.targetIndex === null ? Math.round(menu.track.scrollLeft / step) : menu.targetIndex;
+        var lastIndex = Math.round((menu.track.scrollWidth - menu.track.clientWidth) / step);
+        menu.targetIndex = Math.max(0, Math.min(lastIndex, index + direction));
+        menu.track.scrollTo({
+            left: menu.targetIndex * step,
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+        });
         updateMenu(menu);
     }
 
@@ -122,6 +137,13 @@ document.addEventListener('DOMContentLoaded', function () {
         var width = firstCard ? firstCard.getBoundingClientRect().width : 0;
         var visible = width ? Math.max(1, Math.floor((menu.track.clientWidth + gap + 1) / (width + gap))) : 0;
         var first = width ? Math.round(menu.track.scrollLeft / (width + gap)) : 0;
+        if (menu.targetIndex !== null) {
+            if (Math.abs(menu.track.scrollLeft - menu.targetIndex * (width + gap)) < 1) {
+                menu.targetIndex = null;
+            } else {
+                first = menu.targetIndex;
+            }
+        }
         var lastStart = Math.max(0, menu.cards.length - visible);
         first = Math.min(first, lastStart);
         menu.controls.hidden = menu.cards.length <= visible;
@@ -141,7 +163,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.addEventListener('resize', function () {
-        menus.forEach(updateMenu);
+        menus.forEach(function (menu) {
+            menu.targetIndex = null;
+            updateMenu(menu);
+        });
     });
     menus.forEach(updateMenu);
 });

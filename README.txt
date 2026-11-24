@@ -65,7 +65,8 @@ für noch nicht angelegte Produkte steht dort „Produktseite folgt“.
 Waage und Isolierkanne führen zu bearbeitbaren Empfehlungsseiten ohne Bestellung
 und tragen auf dem Verteiler ein grünes Empfehlungsbanner.
 Mobil lassen sich die Karten jeder Tee- und Utensilienkategorie seitlich wischen;
-auf Desktop zeigen Pfeile rechts weitere Karten; Punkte markieren die Position.
+auf Desktop gleiten weitere Karten per Pfeil ins Bild; Punkte markieren die
+Position. Bei reduzierter Bewegung erfolgt der Wechsel ohne Animation.
 
 Bewusste Grenzen des Piloten:
 - Keine Übernahme von styling.php oder landingpage.php.
