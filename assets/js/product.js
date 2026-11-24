@@ -500,13 +500,20 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogLens.style.backgroundPosition = (lensCenter - x * 2) + 'px ' + (lensCenter - y * 2) + 'px';
         }
         function positionDialogBrand() {
-            if (!dialogBrand) return;
-            var rect = siteBrand.getBoundingClientRect();
-            dialogBrand.style.left = rect.left + 'px';
-            dialogBrand.style.top = rect.top + 'px';
-            dialogBrand.style.width = rect.width + 'px';
-            dialogBrand.style.height = rect.height + 'px';
-            dialog.style.setProperty('--mh-dialog-top', Math.max(90, rect.bottom + 70) + 'px');
+            if (dialogBrand) {
+                var rect = siteBrand.getBoundingClientRect();
+                dialogBrand.style.left = rect.left + 'px';
+                dialogBrand.style.top = rect.top + 'px';
+                dialogBrand.style.width = rect.width + 'px';
+                dialogBrand.style.height = rect.height + 'px';
+                dialog.style.setProperty('--mh-dialog-top', Math.max(90, rect.bottom + 70) + 'px');
+            }
+            var navigation = document.querySelector('.mh-navigation-bar');
+            if (navigation) {
+                var navigationRect = navigation.getBoundingClientRect();
+                dialog.style.setProperty('--mh-dialog-nav-center', (navigationRect.top + navigationRect.height / 2) + 'px');
+                dialog.style.setProperty('--mh-dialog-mobile-top', Math.max(navigationRect.bottom, stage.getBoundingClientRect().top) + 'px');
+            }
         }
 
         modelsContainer.addEventListener('keydown', function (event) {

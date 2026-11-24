@@ -143,10 +143,11 @@ body.mh-product-dialog-open{position:fixed;top:0;left:0;width:100%;overflow:hidd
 .mh-product__dialog-thumbs img{display:block;width:100%;height:100%;object-fit:cover;border-radius:5px}
 .mh-product__dialog .mh-product__dialog-close{position:absolute;top:-70px;right:-70px;text-shadow:0 1px 5px rgba(0,0,0,.8)}
 @media(max-width:500px){
+    .mh-product__dialog[open]{align-items:flex-start;padding:var(--mh-dialog-mobile-top,264px) 15px 20px}
     .mh-product__dialog-frame{width:100%;max-width:100%}
-    .mh-product__dialog-image{max-height:max(1px,min(60vh,calc(100dvh - var(--mh-dialog-top,90px) - 120px)))}
-    .mh-product__dialog-zoom-hint{display:flex}
-    .mh-product__dialog .mh-product__dialog-close{right:0}
+    .mh-product__dialog-image{max-height:max(1px,calc(100dvh - var(--mh-dialog-mobile-top,264px) - 92px))}
+    .mh-product__dialog-zoom-hint{position:fixed;top:var(--mh-dialog-nav-center,237px);left:26px;display:flex;max-width:calc(100vw - 120px);margin:0;transform:translateY(-50%)}
+    .mh-product__dialog .mh-product__dialog-close{position:fixed;top:var(--mh-dialog-nav-center,237px);right:16px;transform:translateY(-50%)}
     .mh-product__dialog .mh-product__dialog-thumbs button{width:52px;height:52px;flex-basis:52px}
 }
 @media(max-width:900px){
