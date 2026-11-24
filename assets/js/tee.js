@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var itemType = page && page.classList.contains('mh-utensilien-page') ? 'Utensilien' : 'Tees';
     var groups = Array.from(content.querySelectorAll(':scope > .wp-block-group'));
     var menus = [];
-    var openMenu = null;
 
     groups.forEach(function (track, index) {
         var heading = track.previousElementSibling;
@@ -17,7 +16,12 @@ document.addEventListener('DOMContentLoaded', function () {
             ? heading.textContent.trim()
             : itemType;
         var carousel = document.createElement('div');
-        var button = document.createElement('button');
+        var controls = document.createElement('div');
+        var arrows = document.createElement('div');
+        var previous = document.createElement('button');
+        var next = document.createElement('button');
+        var dots = document.createElement('span');
+        var position = document.createElement('span');
         var cards = Array.from(track.querySelectorAll(':scope > .wp-block-cover'));
 
         if (page && page.classList.contains('mh-tee-page')) {
@@ -45,89 +49,99 @@ document.addEventListener('DOMContentLoaded', function () {
             card.appendChild(status);
         });
 
-        button.className = 'mh-tee-carousel__button';
-        button.type = 'button';
-        button.setAttribute('aria-controls', track.id);
-        carousel.appendChild(button);
+        controls.className = 'mh-tee-carousel__controls';
+        arrows.className = 'mh-tee-carousel__arrows';
+        dots.className = 'mh-tee-carousel__dots';
+        dots.setAttribute('aria-hidden', 'true');
+        position.className = 'screen-reader-text';
+        position.setAttribute('aria-live', 'polite');
+        [previous, next].forEach(function (button) {
+            button.className = 'mh-tee-carousel__button';
+            button.type = 'button';
+            button.setAttribute('aria-controls', track.id);
+        });
+        previous.textContent = '‹';
+        next.textContent = '›';
+        previous.setAttribute('aria-label', 'Vorherige ' + itemType + ' in ' + category + ' anzeigen');
+        next.setAttribute('aria-label', 'Weitere ' + itemType + ' in ' + category + ' anzeigen');
+        arrows.append(previous, next);
+        controls.append(arrows, dots, position);
+        carousel.appendChild(controls);
 
         var menu = {
-            carousel: carousel,
             track: track,
             cards: cards,
-            button: button,
-            category: category
+            controls: controls,
+            previous: previous,
+            next: next,
+            dots: dots,
+            position: position
         };
         menus.push(menu);
 
-        button.addEventListener('click', function () {
-            openMenu = openMenu === menu ? null : menu;
-            updateMenus();
+        previous.addEventListener('click', function () {
+            move(menu, -1);
+        });
+        next.addEventListener('click', function () {
+            move(menu, 1);
+        });
+        track.addEventListener('scroll', function () {
+            updateMenu(menu);
         });
     });
 
-    function updateMenus() {
-        var mobile = window.matchMedia('(max-width: 782px)').matches;
-        if (mobile) {
-            openMenu = null;
-        }
-        if (page) {
-            page.classList.toggle('has-expanded-carousel', Boolean(openMenu));
-        }
-
-        menus.forEach(function (menu) {
-            var expanded = menu === openMenu;
-            menu.carousel.classList.toggle('is-expanded', expanded);
-        });
-
-        menus.forEach(function (menu) {
-            if (mobile) {
-                menu.cards.forEach(function (card) { card.hidden = false; });
-                if (menu.track.scrollWidth > menu.track.clientWidth || menu.button === document.activeElement) {
-                    menu.track.tabIndex = 0;
-                } else {
-                    menu.track.removeAttribute('tabindex');
-                }
-                if (menu.button === document.activeElement) {
-                    menu.track.focus();
-                }
-                menu.button.hidden = true;
-                return;
-            }
-
-            menu.track.removeAttribute('tabindex');
-            menu.track.scrollLeft = 0;
-            var expanded = menu === openMenu;
-            var firstCard = menu.cards[0];
-            var gap = parseFloat(window.getComputedStyle(menu.track).columnGap) || 0;
-            var cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 0;
-            var availableWidth = Math.min(menu.track.clientWidth, 640);
-            var visibleCount = cardWidth ? Math.max(1, Math.floor((availableWidth + gap) / (cardWidth + gap))) : 0;
-            var canExpand = menu.cards.length > visibleCount;
-
-            menu.button.hidden = !canExpand && !expanded;
-            menu.cards.forEach(function (card, index) {
-                var hide = !expanded && index >= visibleCount;
-                if (hide && card.contains(document.activeElement)) {
-                    menu.button.focus();
-                }
-                card.hidden = hide;
-            });
-
-            if (expanded && menu.cards.length) {
-                var lastCard = menu.cards[menu.cards.length - 1];
-                menu.button.style.setProperty('--mh-chevron-left', (lastCard.offsetLeft + lastCard.offsetWidth) + 'px');
-                menu.button.style.setProperty('--mh-chevron-top', (lastCard.offsetTop + lastCard.offsetHeight / 2) + 'px');
-            }
-
-            menu.button.textContent = expanded ? '‹' : '›';
-            menu.button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-            menu.button.setAttribute(
-                'aria-label',
-                expanded ? itemType + ' in ' + menu.category + ' einklappen' : 'Weitere ' + itemType + ' in ' + menu.category + ' anzeigen'
-            );
-        });
+    function move(menu, direction) {
+        var button = direction < 0 ? menu.previous : menu.next;
+        if (button.getAttribute('aria-disabled') === 'true') return;
+        var firstCard = menu.cards[0];
+        if (!firstCard) return;
+        var gap = parseFloat(window.getComputedStyle(menu.track).columnGap) || 0;
+        var step = firstCard.getBoundingClientRect().width + gap;
+        var index = Math.round(menu.track.scrollLeft / step);
+        menu.track.scrollLeft = (index + direction) * step;
+        updateMenu(menu);
     }
 
-    window.addEventListener('resize', updateMenus);
-    updateMenus();
+    function updateMenu(menu) {
+        var mobile = window.matchMedia('(max-width: 782px)').matches;
+        if (mobile) {
+            var moveFocus = menu.controls.contains(document.activeElement);
+            menu.controls.hidden = true;
+            if (menu.track.scrollWidth > menu.track.clientWidth || moveFocus) {
+                menu.track.tabIndex = 0;
+            } else {
+                menu.track.removeAttribute('tabindex');
+            }
+            if (moveFocus) menu.track.focus();
+            return;
+        }
+
+        menu.track.removeAttribute('tabindex');
+        var firstCard = menu.cards[0];
+        var gap = parseFloat(window.getComputedStyle(menu.track).columnGap) || 0;
+        var width = firstCard ? firstCard.getBoundingClientRect().width : 0;
+        var visible = width ? Math.max(1, Math.floor((menu.track.clientWidth + gap + 1) / (width + gap))) : 0;
+        var first = width ? Math.round(menu.track.scrollLeft / (width + gap)) : 0;
+        var lastStart = Math.max(0, menu.cards.length - visible);
+        first = Math.min(first, lastStart);
+        menu.controls.hidden = menu.cards.length <= visible;
+        menu.previous.setAttribute('aria-disabled', first === 0 ? 'true' : 'false');
+        menu.next.setAttribute('aria-disabled', first >= lastStart ? 'true' : 'false');
+        while (menu.dots.children.length > lastStart + 1) menu.dots.lastElementChild.remove();
+        while (menu.dots.children.length < lastStart + 1) {
+            var dot = document.createElement('span');
+            dot.className = 'mh-tee-carousel__dot';
+            menu.dots.appendChild(dot);
+        }
+        Array.from(menu.dots.children).forEach(function (dot, index) {
+            dot.classList.toggle('is-active', index === first);
+        });
+        var text = (first + 1) + '–' + Math.min(first + visible, menu.cards.length) + ' von ' + menu.cards.length;
+        if (menu.position.textContent !== text) menu.position.textContent = text;
+    }
+
+    window.addEventListener('resize', function () {
+        menus.forEach(updateMenu);
+    });
+    menus.forEach(updateMenu);
 });
