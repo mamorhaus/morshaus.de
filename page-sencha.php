@@ -76,7 +76,6 @@
                             </section>
                         </div>
                         <dialog class="mh-product__dialog" aria-label="Vergrößerte Produktbilder">
-                            <button type="button" data-action="previous" aria-label="Vorheriges Bild">‹</button>
                             <div class="mh-product__dialog-frame">
                                 <span class="mh-product__dialog-zoom-hint"><span class="mh-product__dialog-zoom-hint-icon" aria-hidden="true">⌕</span>Zum Zoomen gedrückt halten</span>
                                 <div class="mh-product__dialog-viewport">
@@ -86,7 +85,6 @@
                                 <div class="mh-product__dialog-thumbs" role="group" aria-label="Produktbilder auswählen" hidden></div>
                                 <button type="button" data-action="close" class="mh-product__dialog-close" aria-label="Schließen" autofocus>×</button>
                             </div>
-                            <button type="button" data-action="next" aria-label="Nächstes Bild">›</button>
                         </dialog>
                         <noscript><p>Für die Produktauswahl und die Bestellliste wird JavaScript benötigt.</p></noscript>
                     </div>

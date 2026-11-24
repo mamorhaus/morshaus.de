@@ -59,6 +59,16 @@ document.addEventListener('DOMContentLoaded', function () {
         var dialogViewport = dialog.querySelector('.mh-product__dialog-viewport');
         var dialogLens = dialog.querySelector('.mh-product__dialog-lens');
         var dialogThumbs = dialog.querySelector('.mh-product__dialog-thumbs');
+        var siteBrand = document.querySelector('.mh-brand');
+        var dialogBrand = null;
+        var scrollBeforeDialog = null;
+        if (siteBrand) {
+            dialogBrand = siteBrand.cloneNode(true);
+            dialogBrand.classList.add('mh-product__dialog-brand');
+            dialogBrand.removeAttribute('href');
+            dialogBrand.setAttribute('aria-hidden', 'true');
+            dialog.appendChild(dialogBrand);
+        }
 
         function edition() { return data.editions[editionIndex]; }
         function model() { return edition().models[modelIndex]; }
@@ -456,8 +466,6 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogImage.alt = current.alt || model().name;
             dialogLens.classList.remove('is-active');
             dialogLens.style.backgroundImage = 'url(' + JSON.stringify(current.full) + ')';
-            dialog.querySelector('[data-action="previous"]').hidden = images.length < 2;
-            dialog.querySelector('[data-action="next"]').hidden = images.length < 2;
             dialogThumbs.replaceChildren();
             dialogThumbs.hidden = images.length < 2;
             images.forEach(function (photo, index) {
@@ -490,6 +498,15 @@ document.addEventListener('DOMContentLoaded', function () {
             dialogLens.style.top = y + 'px';
             dialogLens.style.backgroundSize = (rect.width * 2) + 'px ' + (rect.height * 2) + 'px';
             dialogLens.style.backgroundPosition = (lensCenter - x * 2) + 'px ' + (lensCenter - y * 2) + 'px';
+        }
+        function positionDialogBrand() {
+            if (!dialogBrand) return;
+            var rect = siteBrand.getBoundingClientRect();
+            dialogBrand.style.left = rect.left + 'px';
+            dialogBrand.style.top = rect.top + 'px';
+            dialogBrand.style.width = rect.width + 'px';
+            dialogBrand.style.height = rect.height + 'px';
+            dialog.style.setProperty('--mh-dialog-top', Math.max(90, rect.bottom + 70) + 'px');
         }
 
         modelsContainer.addEventListener('keydown', function (event) {
@@ -551,14 +568,40 @@ document.addEventListener('DOMContentLoaded', function () {
         stage.addEventListener('click', function () {
             if (!galleryImages().length) return;
             renderDialog();
+            scrollBeforeDialog = {x: window.scrollX, y: window.scrollY};
+            window.scrollTo({left: 0, top: 0, behavior: 'instant'});
+            document.documentElement.classList.add('mh-product-dialog-open');
+            document.body.classList.add('mh-product-dialog-open');
+            positionDialogBrand();
             dialog.showModal();
         });
         dialog.querySelector('[data-action="close"]').addEventListener('click', function () { dialog.close(); });
+        dialog.addEventListener('close', function () {
+            document.documentElement.classList.remove('mh-product-dialog-open');
+            document.body.classList.remove('mh-product-dialog-open');
+            window.clearTimeout(dialogTouchTimer);
+            dialogTouchTimer = null;
+            dialogTouchStart = null;
+            dialogTouchZoomed = false;
+            dialogLens.classList.remove('is-active');
+            if (scrollBeforeDialog) {
+                window.scrollTo({left: scrollBeforeDialog.x, top: scrollBeforeDialog.y, behavior: 'instant'});
+                scrollBeforeDialog = null;
+            }
+        });
+        window.addEventListener('resize', function () {
+            if (dialog.open) positionDialogBrand();
+        });
         dialogViewport.addEventListener('pointermove', function (event) {
             if (event.pointerType !== 'mouse') return;
             positionDialogLens(event.clientX, event.clientY);
         });
         dialogViewport.addEventListener('pointerleave', function () { dialogLens.classList.remove('is-active'); });
+        dialogViewport.addEventListener('contextmenu', function (event) {
+            if (dialogTouchStart || event.pointerType === 'touch' || window.matchMedia('(pointer: coarse)').matches) {
+                event.preventDefault();
+            }
+        });
         dialogViewport.addEventListener('touchstart', function (event) {
             window.clearTimeout(dialogTouchTimer);
             dialogTouchTimer = null;
@@ -609,13 +652,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (event.key === 'Escape') {
                 event.preventDefault();
                 dialog.close();
+            } else if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && galleryImages().length > 1) {
+                event.preventDefault();
+                navigateDialog(event.key === 'ArrowRight' ? 1 : -1);
+                dialogThumbs.querySelector('[aria-pressed="true"]').focus();
             }
-        });
-        dialog.querySelector('[data-action="previous"]').addEventListener('click', function () {
-            navigateDialog(-1);
-        });
-        dialog.querySelector('[data-action="next"]').addEventListener('click', function () {
-            navigateDialog(1);
         });
         dialogThumbs.addEventListener('click', function (event) {
             var button = event.target.closest('button[data-index]');
@@ -623,6 +664,7 @@ document.addEventListener('DOMContentLoaded', function () {
             imageIndex = Number(button.dataset.index);
             updateGalleryImage();
             renderDialog();
+            dialogThumbs.querySelector('[aria-pressed="true"]').focus();
         });
         addButton.addEventListener('click', function () {
             if (added) {
